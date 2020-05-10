@@ -8,14 +8,14 @@ contract OwnershipToken is ERC20 {
         ERC20(name, symbol)
         public
     {
-        _mint(tx.origin, amount);
+        _mint(_msgSender(), amount);
         _setupDecimals(1);
     }
 
     function getBalance(address account) public view returns (uint256){
         return balanceOf(account);
     }
-    
+
     function sell(address buyer, uint256 amount) public returns (bool) {
         transfer(buyer, amount);
     }

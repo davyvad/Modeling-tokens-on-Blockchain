@@ -2,6 +2,7 @@ const ConvertLib = artifacts.require("ConvertLib");
 const MetaCoin = artifacts.require("MetaCoin");
 const RentalToken = artifacts.require("RentalToken");
 const OwnershipToken = artifacts.require("OwnershipToken");
+const SmartRentalToken = artifacts.require("SmartRentalToken");
 
 module.exports = function(deployer) {
   // deployer.deploy(ConvertLib);
@@ -12,6 +13,8 @@ module.exports = function(deployer) {
   const symbol = "car";
   const amount = 1;
   deployer.deploy(OwnershipToken, name, symbol, amount);
+  deployer.deploy(RentalToken, name, symbol);
+  deployer.deploy(SmartRentalToken, name, symbol);
   //deployer.deploy(RentalToken, "rental1", "symb");
 
 };

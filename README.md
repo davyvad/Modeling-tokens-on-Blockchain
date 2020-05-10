@@ -49,9 +49,9 @@ truffle console --network ganache
 ## Example how to use the ganache console:
  
 1) Instantiate a token OwnershipToken with a balance of 1 to the msgSender (msgSender is what's mentioned in the brackets: from accounts[9]): 
-let Instance2 = await OwnershipToken.new("nam", "sym", 1, {from:accounts[9]})
+let Instance = await OwnershipToken.new("nam", "sym", 1, {from:accounts[9]})
 2) let accounts = await web3.eth.getAccounts()
 
 3) to get balance of a certain account:
- let balance = await Instance2.getBalance(accounts[0]) 
+ let balance = await Instance.getBalance(accounts[0]) 
 

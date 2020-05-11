@@ -26,16 +26,15 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.7+commit.b8d736ae\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"conversionRate\",\"type\":\"uint256\"}],\"name\":\"convert\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"convertedAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/davidvalensi/Documents/TECHNION/Blockchain/MetaCoin/contracts/ConvertLib.sol\":\"ConvertLib\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/davidvalensi/Documents/TECHNION/Blockchain/MetaCoin/contracts/ConvertLib.sol\":{\"keccak256\":\"0xfde82bd17946d3836267b249a3805d7376587f40b08aecd17764223217a3c048\",\"urls\":[\"bzz-raw://768c78ccfa036bc0cad39c385961ad4aba48327f9752aa8992d36c4dc2a7384f\",\"dweb:/ipfs/QmQRjB1rSC8C38rX55ALgNosgsusHK71Tf7r4xHtqPuSd7\"]}},\"version\":1}",
-  "bytecode": "0x60c4610025600b82828239805160001a60731461001857fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361060335760003560e01c806396e4ee3d146038575b600080fd5b606b60048036036040811015604c57600080fd5b8101908080359060200190929190803590602001909291905050506081565b6040518082815260200191505060405180910390f35b600081830290509291505056fea26469706673582212205f4eff4041295e94b593449749d63a7da28cf15b2c3050fc33c6ab509cf849b564736f6c63430006070033",
-  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040526004361060335760003560e01c806396e4ee3d146038575b600080fd5b606b60048036036040811015604c57600080fd5b8101908080359060200190929190803590602001909291905050506081565b6040518082815260200191505060405180910390f35b600081830290509291505056fea26469706673582212205f4eff4041295e94b593449749d63a7da28cf15b2c3050fc33c6ab509cf849b564736f6c63430006070033",
-  "immutableReferences": {},
-  "sourceMap": "34:155:0:-:0;;132:2:-1;166:7;155:9;146:7;137:37;255:7;249:14;246:1;241:23;235:4;232:33;222:2;;269:9;222:2;293:9;290:1;283:20;323:4;314:7;306:22;347:7;338;331:24",
-  "deployedSourceMap": "34:155:0:-:0;;;;;;;;;;;;;;;;;;;;;12:1:-1;9;2:12;55:132:0;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;55:132:0;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;126:20;169:14;160:6;:23;153:30;;55:132;;;;:::o",
-  "source": "pragma solidity >=0.4.25 <0.7.0;\n\nlibrary ConvertLib{\n\tfunction convert(uint amount,uint conversionRate) public pure returns (uint convertedAmount)\n\t{\n\t\treturn amount * conversionRate;\n\t}\n}\n",
-  "sourcePath": "/Users/davidvalensi/Documents/TECHNION/Blockchain/MetaCoin/contracts/ConvertLib.sol",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.7+commit.b8d736ae\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"conversionRate\",\"type\":\"uint256\"}],\"name\":\"convert\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"convertedAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/Naomie Abecassis/Desktop/IBM Project/IBM/Modeling-tokens-on-Blockchain/Modeling-tokens-on-Blockchain/contracts/ConvertLib.sol\":\"ConvertLib\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/Naomie Abecassis/Desktop/IBM Project/IBM/Modeling-tokens-on-Blockchain/Modeling-tokens-on-Blockchain/contracts/ConvertLib.sol\":{\"keccak256\":\"0xedaee806e93daf1cfb640c7c3803fd44398dc853e65a9655608a0ee66b0b2840\",\"urls\":[\"bzz-raw://5b1930bfec4a20d1f21080680abfeed66f150de4dc39caf0061d20dd9846f26a\",\"dweb:/ipfs/QmWLK9G8mb5L1heQ9gUnfDBdLNwrEAATyKMJtPnynsHpeX\"]}},\"version\":1}",
+  "bytecode": "0x60c4610025600b82828239805160001a60731461001857fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361060335760003560e01c806396e4ee3d146038575b600080fd5b606b60048036036040811015604c57600080fd5b8101908080359060200190929190803590602001909291905050506081565b6040518082815260200191505060405180910390f35b600081830290509291505056fea2646970667358221220a7da6ec3707531c05e56270aae7dc8ec270b68fe80f56435d46a3b9d85f51c2a64736f6c63430006070033",
+  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040526004361060335760003560e01c806396e4ee3d146038575b600080fd5b606b60048036036040811015604c57600080fd5b8101908080359060200190929190803590602001909291905050506081565b6040518082815260200191505060405180910390f35b600081830290509291505056fea2646970667358221220a7da6ec3707531c05e56270aae7dc8ec270b68fe80f56435d46a3b9d85f51c2a64736f6c63430006070033",
+  "sourceMap": "36:160:0:-:0;;132:2:-1;166:7;155:9;146:7;137:37;255:7;249:14;246:1;241:23;235:4;232:33;222:2;;269:9;222:2;293:9;290:1;283:20;323:4;314:7;306:22;347:7;338;331:24",
+  "deployedSourceMap": "36:160:0:-:0;;;;;;;;;;;;;;;;;;;;;12:1:-1;9;2:12;58:135:0;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;58:135:0;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;129:20;174:14;165:6;:23;158:30;;58:135;;;;:::o",
+  "source": "pragma solidity >=0.4.25 <0.7.0;\r\n\r\nlibrary ConvertLib{\r\n\tfunction convert(uint amount,uint conversionRate) public pure returns (uint convertedAmount)\r\n\t{\r\n\t\treturn amount * conversionRate;\r\n\t}\r\n}\r\n",
+  "sourcePath": "C:\\Users\\Naomie Abecassis\\Desktop\\IBM Project\\IBM\\Modeling-tokens-on-Blockchain\\Modeling-tokens-on-Blockchain\\contracts\\ConvertLib.sol",
   "ast": {
-    "absolutePath": "/Users/davidvalensi/Documents/TECHNION/Blockchain/MetaCoin/contracts/ConvertLib.sol",
+    "absolutePath": "/C/Users/Naomie Abecassis/Desktop/IBM Project/IBM/Modeling-tokens-on-Blockchain/Modeling-tokens-on-Blockchain/contracts/ConvertLib.sol",
     "exportedSymbols": {
       "ConvertLib": [
         16
@@ -76,7 +75,7 @@
             "body": {
               "id": 14,
               "nodeType": "Block",
-              "src": "149:38:0",
+              "src": "153:40:0",
               "statements": [
                 {
                   "expression": {
@@ -97,7 +96,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 3,
-                      "src": "160:6:0",
+                      "src": "165:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -112,13 +111,13 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 5,
-                      "src": "169:14:0",
+                      "src": "174:14:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "160:23:0",
+                    "src": "165:23:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -127,7 +126,7 @@
                   "functionReturnParameters": 9,
                   "id": 13,
                   "nodeType": "Return",
-                  "src": "153:30:0"
+                  "src": "158:30:0"
                 }
               ]
             },
@@ -152,7 +151,7 @@
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 15,
-                  "src": "72:11:0",
+                  "src": "75:11:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -163,7 +162,7 @@
                     "id": 2,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "72:4:0",
+                    "src": "75:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -180,7 +179,7 @@
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 15,
-                  "src": "84:19:0",
+                  "src": "87:19:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -191,7 +190,7 @@
                     "id": 4,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "84:4:0",
+                    "src": "87:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -201,7 +200,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "71:33:0"
+              "src": "74:33:0"
             },
             "returnParameters": {
               "id": 9,
@@ -215,7 +214,7 @@
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 15,
-                  "src": "126:20:0",
+                  "src": "129:20:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -226,7 +225,7 @@
                     "id": 7,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "126:4:0",
+                    "src": "129:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -236,23 +235,23 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "125:22:0"
+              "src": "128:22:0"
             },
             "scope": 16,
-            "src": "55:132:0",
+            "src": "58:135:0",
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "public"
           }
         ],
         "scope": 17,
-        "src": "34:155:0"
+        "src": "36:160:0"
       }
     ],
-    "src": "0:190:0"
+    "src": "0:198:0"
   },
   "legacyAST": {
-    "absolutePath": "/Users/davidvalensi/Documents/TECHNION/Blockchain/MetaCoin/contracts/ConvertLib.sol",
+    "absolutePath": "/C/Users/Naomie Abecassis/Desktop/IBM Project/IBM/Modeling-tokens-on-Blockchain/Modeling-tokens-on-Blockchain/contracts/ConvertLib.sol",
     "exportedSymbols": {
       "ConvertLib": [
         16
@@ -293,7 +292,7 @@
             "body": {
               "id": 14,
               "nodeType": "Block",
-              "src": "149:38:0",
+              "src": "153:40:0",
               "statements": [
                 {
                   "expression": {
@@ -314,7 +313,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 3,
-                      "src": "160:6:0",
+                      "src": "165:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -329,13 +328,13 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 5,
-                      "src": "169:14:0",
+                      "src": "174:14:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "src": "160:23:0",
+                    "src": "165:23:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -344,7 +343,7 @@
                   "functionReturnParameters": 9,
                   "id": 13,
                   "nodeType": "Return",
-                  "src": "153:30:0"
+                  "src": "158:30:0"
                 }
               ]
             },
@@ -369,7 +368,7 @@
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 15,
-                  "src": "72:11:0",
+                  "src": "75:11:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -380,7 +379,7 @@
                     "id": 2,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "72:4:0",
+                    "src": "75:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -397,7 +396,7 @@
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 15,
-                  "src": "84:19:0",
+                  "src": "87:19:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -408,7 +407,7 @@
                     "id": 4,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "84:4:0",
+                    "src": "87:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -418,7 +417,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "71:33:0"
+              "src": "74:33:0"
             },
             "returnParameters": {
               "id": 9,
@@ -432,7 +431,7 @@
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 15,
-                  "src": "126:20:0",
+                  "src": "129:20:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -443,7 +442,7 @@
                     "id": 7,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "126:4:0",
+                    "src": "129:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -453,28 +452,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "125:22:0"
+              "src": "128:22:0"
             },
             "scope": 16,
-            "src": "55:132:0",
+            "src": "58:135:0",
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "public"
           }
         ],
         "scope": 17,
-        "src": "34:155:0"
+        "src": "36:160:0"
       }
     ],
-    "src": "0:190:0"
+    "src": "0:198:0"
   },
   "compiler": {
     "name": "solc",
     "version": "0.6.7+commit.b8d736ae.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.1.0",
-  "updatedAt": "2020-05-10T17:33:59.940Z",
+  "schemaVersion": "3.0.21",
+  "updatedAt": "2020-05-11T14:42:19.461Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

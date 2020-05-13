@@ -6,7 +6,7 @@ import "../contracts/SmartRentalToken.sol";
 
 contract SmartOwnershipToken is ERC20 {
     address private _owner;
-    SmartRentalToken private _renter;
+    SmartRentalToken private _renterToken;
     bool private _renterSet;
 
     constructor(string memory name, string memory symbol)
@@ -25,31 +25,43 @@ contract SmartOwnershipToken is ERC20 {
             _;
     }
 
-    function getOwner2() public view returns (address) {
+    function getOwner() public view returns (address) {
         return _owner;
     }
+
+    function getRentalToken() public view returns (SmartRentalToken) {
+        return _renterToken;
+    }
+
+    function hasRenter() public view returns (bool) {
+        return _renterSet;
+    }
+    function getThis() public view returns (address) {
+        return address(this);
+    }
     function setRenter(SmartRentalToken rentalToken) public onlyOwner {
-        require(rentalToken.getOwnerToken() == this, "Trying to set a renter while owner is not matching");
         require(rentalToken.getOwner() == _owner, "Owner of Rental differs from the owner of OwnerShip");
-        _renter = rentalToken;
+        require(false == rentalToken.belongsToOwner(), "Trying to set a renter while the Rental has an Ownership");
+        require(false == _renterSet, "This ownership is already rented");
+
+        rentalToken.setOwnerContract(this);
+        _renterToken = rentalToken;
         _renterSet = true;
     }
 
-    function sell(address buyer) public returns (bool) { //TODO: add update of the renter!!
+    // function setNoRenter() public {
+    //     require(_msgSender() == _renterToken, "nj");
+
+    // }
+    function sell(address buyer) public onlyOwner returns (bool) { //TODO: add update of the renter!!
         require(_msgSender() == _owner, "The contract doesn't belong to the seller");
-        require(false = _renterSet, "This ownership is rented, can't sell it.");
-        if(_renterSet){
-            //require(_renter.allowance(_msgSender(), _msgSender()) == 1,"The contract is in rent, you can't sell it");
-        }
+        require(false == _renterSet, "This ownership is rented, can't sell it.");
         if( !transferFrom(_msgSender(), buyer, 1)){ //set balances[_msgSender()]-=1 and balances[buyer]+=1
             return false;
         }
+        _approve(buyer, buyer, 1);
         _owner = buyer;
         return true;
-    }
-
-    function setNoRent() public {
-        renterSet = false;
     }
 
     // function proofOfOwnership() public view returns (bool){

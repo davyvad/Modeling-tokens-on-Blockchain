@@ -6,7 +6,7 @@ import "../contracts/SmartOwnershipToken.sol";
 contract SmartRentalToken is ERC20 {
     address private _owner;
     SmartOwnershipToken private _ownerToken;
-    // bool private ownerSet;
+    bool private _ownerSet;
 
     constructor(string memory name, string memory symbol) //, address owner)
         ERC20(name, symbol)
@@ -14,10 +14,8 @@ contract SmartRentalToken is ERC20 {
             //require(msg.sender == owner.getOwner(), "Not the owner call");
             _mint(msg.sender, 1);
             _approve(_msgSender(), _msgSender(), 1); //set allowances[msgSender][msgSender] = 1
-            //_ownerToken = owner;
             _owner = _msgSender();
-            _ownerToken = 0;
-            // ownerSet = false;
+            _ownerSet = false;
         }
 
         modifier onlyOwner {
@@ -42,7 +40,6 @@ contract SmartRentalToken is ERC20 {
                 return false;
             }
             _approve(owner, owner, 1); //set allowances[owner][owner] = 1
-            _ownerToken.setNoRent();
         }
 
         function getOwnerToken() public view returns (SmartOwnershipToken){
@@ -52,11 +49,16 @@ contract SmartRentalToken is ERC20 {
         function getOwner() public view returns (address){  //this fn is view in order to return the address only
             return _owner;
         }
+        function belongsToOwner() public view returns (bool) {
+            return _ownerSet;
+        }
 
         function setOwnerContract(SmartOwnershipToken ownerToken) public {
-            require(ownerToken.getOwner2() == _owner, "setOwnerContract : Not owner call");
-            ownerToken.getOwner2();
+            require(ownerToken.getOwner() == _owner, "setOwnerContract : Not owner call");
+            require(_msgSender() == ownerToken.getThis(), "Not a call from ownerToken");
+            //ownerToken.getOwner();
             _ownerToken = ownerToken;
+            _ownerSet = true;
         }
 
         function setOwner(address owner) public{

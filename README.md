@@ -55,3 +55,10 @@ let Instance = await OwnershipToken.new("nam", "sym", 1, {from:accounts[9]})
 3) to get balance of a certain account:
  let balance = await Instance.getBalance(accounts[0]) 
 
+let rental = await SmartRentalToken.new("nam", "symb", {from:accounts[5]})
+let owner = await SmartOwnershipToken.new("nam", "symb")
+
+let rental = await SmartRentalToken.new("nam", "symb")
+rental.setOwner(accounts[4])
+rental.setOwnerContract(owner.address)
+owner.setRenter(rental.address)

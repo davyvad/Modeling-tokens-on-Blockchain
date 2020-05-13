@@ -25,22 +25,21 @@ contract SmartOwnershipToken is ERC20 {
             _;
     }
 
-    function getOwner2() public view returns (address) {
+    function getOwner() public view returns (address) {
         return _owner;
     }
     function setRenter(SmartRentalToken rentalToken) public onlyOwner {
-        require(rentalToken.getOwnerToken() == this, "Trying to set a renter while owner is not matching");
+        //require(rentalToken.getOwnerToken() == this, "Trying to set a renter while owner is not matching");
         require(rentalToken.getOwner() == _owner, "Owner of Rental differs from the owner of OwnerShip");
+        require(false == _renterSet, "...");
         _renter = rentalToken;
+        rentalToken.setOwnerContract(this);
         _renterSet = true;
     }
 
     function sell(address buyer) public returns (bool) { //TODO: add update of the renter!!
         require(_msgSender() == _owner, "The contract doesn't belong to the seller");
-        require(false = _renterSet, "This ownership is rented, can't sell it.");
-        if(_renterSet){
-            //require(_renter.allowance(_msgSender(), _msgSender()) == 1,"The contract is in rent, you can't sell it");
-        }
+        require(false == _renterSet, "This ownership is rented, can't sell it.");
         if( !transferFrom(_msgSender(), buyer, 1)){ //set balances[_msgSender()]-=1 and balances[buyer]+=1
             return false;
         }
@@ -48,9 +47,9 @@ contract SmartOwnershipToken is ERC20 {
         return true;
     }
 
-    function setNoRent() public {
-        renterSet = false;
-    }
+    // function setNoRent() public {
+    //     _renterSet = false;
+    // }
 
     // function proofOfOwnership() public view returns (bool){
     //     return (this.balanceOf(_msgSender()) == 1);

@@ -64,6 +64,10 @@ contract SmartOwnershipToken is ERC20 {
         return true;
     }
 
+    // function setNoRent() public {
+    //     _renterSet = false;
+    // }
+
     // function proofOfOwnership() public view returns (bool){
     //     return (this.balanceOf(_msgSender()) == 1);
     // }

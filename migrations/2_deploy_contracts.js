@@ -13,8 +13,10 @@ module.exports = function(deployer) {
   const name = "My car";
   const symbol = "car";
   const amount = 1;
-  deployer.deploy(OwnershipToken, name, symbol, amount);
-  deployer.deploy(RentalToken, name, symbol);
+  //SmartOwnership = new SmartOwnershipToken;
+
+  //deployer.deploy(OwnershipToken, name, symbol, amount);
+  //deployer.deploy(RentalToken, name, symbol);
   deployer.deploy(SmartOwnershipToken, name , symbol);
   deployer.deploy(SmartRentalToken, name, symbol);
   //deployer.deploy(RentalToken, "rental1", "symb");

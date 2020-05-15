@@ -58,11 +58,51 @@ let Instance = await OwnershipToken.new("nam", "sym", {from:accounts[9]})
 let rental = await SmartRentalToken.new("nam", "symb", {from:accounts[5]})
 let owner = await SmartOwnershipToken.new("nam", "symb")
 
-let rental = await SmartRentalToken.new("nam", "symb")
-rental.setOwner(accounts[4])
-rental.setOwnerContract(owner.address)
-owner.setRenter(rental.address)
 
-let owner1 = await SmartOwnershipToken.new("nam", "sym", {from:accounts[6]})
-let renter1 = await SmartRentalToken.new("nam", "sym", {from:accounts[6]})
-owner1.setRenter(renter1.address, {from:accounts[6]})
+
+let owner = await SmartOwnershipToken.new("nam", "sym", {from:accounts[6]})
+let renter = await SmartRentalToken.new("nam", "sym", {from:accounts[6]})
+owner.setRenter(renter.address, {from:accounts[6]})
+
+renter.rent_begin(accounts[5], {from:accounts[6]})
+renter.balanceOf(accounts[6]) 
+renter.balanceOf(accounts[5]) 
+
+renter.rent_end({from:accounts[5]})
+renter.balanceOf(accounts[6]) 
+ 
+
+owner.sell(accounts[4], {from:accounts[6]})
+owner.balanceOf(accounts[6]) 
+owner.balanceOf(accounts[4]) 
+
+
+// NEW SIMULATION
+// A=6, B=7, C=8, D=9
+let accounts = await web3.eth.getAccounts()
+let owner = await SmartOwnershipToken.new("nam", "sym", {from:accounts[6]})
+let array = [accounts[7], accounts[8]]
+owner.startRent(array, 3 {from:accounts[6]})
+let rentA = await owner.getRentalToken()
+let rent = await SmartRentalToken.at(rentA)
+//should fail:
+rent.transfer(accounts[9], 1, {from:accounts[6]}) 
+//should succeed:
+rent.transfer(accounts[7], 1, {from:accounts[6]}) 
+//should fail before the time is over
+rent.transfer(accounts[6], 1, {from:accounts[6]}) 
+//should fail:
+rent.transfer(accounts[9], 1, {from:accounts[7]}) 
+//should succeed within the right time
+rent.transfer(accounts[8], 1, {from:accounts[7]}) 
+//should fail because asset is in rent
+owner.transfer(accounts[9], 1, {from:accounts[6]})
+//wait the right time
+rent.remainingTime()
+//should fail
+rent.transfer(accounts[7], 1, {from:accounts[8]})
+//should succeed
+rent.transfer(accounts[6], 1, {from:accounts[6]})
+owner.transfer(accounts[9], 1, {from:accounts[6]})
+owner.balanceOf(accounts[9]) 
+

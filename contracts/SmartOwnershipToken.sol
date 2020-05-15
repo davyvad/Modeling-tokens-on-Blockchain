@@ -14,10 +14,7 @@ contract SmartOwnershipToken is ERC20 {
         public
     {
         _mint(_msgSender(), 1);
-        //_setupDecimals(1);
-        _approve(_msgSender(), _msgSender(), 1); //set allowances[msgSender][msgSender] = 1
         _owner = _msgSender();
-        //renter is by default set to 0
         _renterSet = false;
     }
     modifier onlyOwner {
@@ -29,8 +26,8 @@ contract SmartOwnershipToken is ERC20 {
         return _owner;
     }
 
-    function getRentalToken() public view returns (SmartRentalToken) {
-        return _renterToken;
+    function getRentalToken() public view returns (address) {
+        return address(_renterToken);
     }
 
     function hasRenter() public view returns (bool) {
@@ -39,36 +36,69 @@ contract SmartOwnershipToken is ERC20 {
     function getThis() public view returns (address) {
         return address(this);
     }
-    function setRenter(SmartRentalToken rentalToken) public onlyOwner {
-        require(rentalToken.getOwner() == _owner, "Owner of Rental differs from the owner of OwnerShip");
-        require(false == rentalToken.belongsToOwner(), "Trying to set a renter while the Rental has an Ownership");
-        require(false == _renterSet, "This ownership is already rented");
-
-        rentalToken.setOwnerContract(this);
-        _renterToken = rentalToken;
+    function startRent(address[] memory rentersList, uint rentTime) public onlyOwner {
+        require(_renterSet == false || (_renterToken.rentIsValid() == false), "This ownership is already rented");
+        require(_msgSender() == _owner, "Error: the owner of the contract must start the rent");
+        if(_renterSet == true && _renterToken.rentIsValid() == false){
+            _renterToken.burn(1);
+            _renterSet = false;
+        }
+        _renterToken = new SmartRentalToken(name(), symbol());
+        _renterToken.setRent(rentersList, this, rentTime);
         _renterSet = true;
     }
 
-    // function setNoRenter() public {
-    //     require(_msgSender() == _renterToken, "nj");
+    function endRentFromRenter() public {
+        require(_renterSet == true, "The product is not on rent");
+        require(_msgSender() == _renterToken.mainRenter(), "Request for end must be from main renter");
+        _renterToken.burn(1);
+        _renterSet = false;
+    }
 
-    // }
-    function sell(address buyer) public onlyOwner returns (bool) { //TODO: add update of the renter!!
-        require(_msgSender() == _owner, "The contract doesn't belong to the seller");
-        require(false == _renterSet, "This ownership is rented, can't sell it.");
-        if( !transferFrom(_msgSender(), buyer, 1)){ //set balances[_msgSender()]-=1 and balances[buyer]+=1
-            return false;
+    function endRentFromOwner() public onlyOwner{
+        require(_renterSet == true, "The product is not on rent");
+        require(_renterToken.rentIsValid() == false, "Rent is not finished yet");
+        _renterToken.burn(1);
+        _renterSet = false;
+    }
+
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+        require(_renterSet == false || (_renterToken.rentIsValid() == false), "Error: the item is on rent");
+        require(_msgSender() == _owner, "Only owner is allowed to make transfer");
+        _transfer(_msgSender(), recipient, amount);
+        _owner = recipient;
+        if(_renterSet == true && _renterToken.rentIsValid() == false){//burn the rent
+            _renterToken.burn(1);
+            _renterSet = false;
         }
-        _approve(buyer, buyer, 1);
-        _owner = buyer;
         return true;
     }
 
-    // function setNoRent() public {
-    //     _renterSet = false;
-    // }
+    //TODO : CHECK IMPLEMENTATION
+    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+        return true;
+    }
 
-    // function proofOfOwnership() public view returns (bool){
-    //     return (this.balanceOf(_msgSender()) == 1);
-    // }
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+        require(_renterSet == false || (_renterToken.rentIsValid() == false), "Error: the item is on rent");
+        require(_msgSender() == _owner, "Only owner is allowed to make transfer");
+        require(sender == _owner, "Only owner is allowed to make transfer");
+        _transfer(sender, recipient, amount);
+        _owner = recipient;
+        if(_renterSet == true && _renterToken.rentIsValid() == false){//burn the rent
+            _renterToken.burn(1);
+            _renterSet = false;
+        }
+        return true;
+    }
+ 
+    function burn(uint amount) public {
+        require(_msgSender() == _owner, "Trying to burn illegaly");
+        require(_renterSet == false || (_renterToken.rentIsValid() == false) || (_renterToken.mainRenter() == _owner), "Asset is on rent, can't burn");
+        if(_renterSet == true){//burn the rent
+            _renterToken.burn(1);
+            _renterSet = false;
+        }
+        _burn(_msgSender(), amount); //TODO : CHANGE AMOUNT TO 1
+    }
 }

@@ -6,79 +6,88 @@ import "../contracts/SmartOwnershipToken.sol";
 contract SmartRentalToken is ERC20 {
     address private _owner;
     SmartOwnershipToken private _ownerToken;
-    bool private _ownerSet;
+    mapping (address => bool) public _renters;
+    address _mainRenter;
+    uint public createdTimestamp;
+    uint public _rentTime;
 
-    constructor(string memory name, string memory symbol) //, address owner)
+    constructor(string memory name, string memory symbol)
         ERC20(name, symbol)
         public {
-            //require(msg.sender == owner.getOwner(), "Not the owner call");
-            _mint(msg.sender, 1);
-            _approve(_msgSender(), _msgSender(), 1); //set allowances[msgSender][msgSender] = 1
-            _owner = _msgSender();
-            _ownerSet = false;
+            //_owner = _msgSender();
+            createdTimestamp = block.timestamp;
         }
 
-        modifier onlyOwner {
-            require(_msgSender() == _rentalOwner, "Not owner call");
-            _;
+    function setRent(address[] memory rentersList, SmartOwnershipToken owner, uint rentTime) public returns (bool){
+        require(_msgSender() == owner.getThis(), "Trying to set the rent from not owner account");
+        _mint(owner.getOwner(), 1);
+        _owner = owner.getOwner();
+        _mainRenter = owner.getOwner();
+        for(uint i = 0; i<rentersList.length; i++){
+            _renters[rentersList[i]] = true;
         }
+        _renters[owner.getOwner()] = true;
+        _ownerToken = owner;
+        _rentTime = rentTime;
 
-        function rent_begin(address recipient) public returns (bool){
-            // msgSender is owner of the token
-            require(_ownerSet == true, "No owner for the SmartRental contract");
-            require(_msgSender() == _ownerToken.getOwner(), "Trying to start a rent by someone else than the owner");
-            if( ! transferFrom(_msgSender(), recipient, 1))       //set balance[owner] = 0 and balance[recipient]=1
-            {                                                     // and allowance[owner][owner] = 0
-                return false;
-            }
-            _approve(_msgSender(), recipient, 0); //set allowances[owner][recipient] = 0
-            _approve(recipient, recipient, 1); //set allowances[recipient][recipient] = 1
-            return true;
+    }
+
+    function returnRent() public {
+        require(_msgSender() == _mainRenter, "Error: only mainRenter can return rent");
+        _ownerToken.endRentFromRenter();
+    }
+
+    function rentIsValid() public view returns (bool){
+        return ( _rentTime * 1 minutes >= now - createdTimestamp );
+    }
+
+    function mainRenter() public view returns (address){
+        return _mainRenter;
+    }
+
+    function remainingTime() public view returns (uint){
+        return now - createdTimestamp;
+    }
+
+    function burn(uint amount) public {
+        require(_msgSender() == _mainRenter || _msgSender() == _ownerToken.getThis(), "Trying to burn illegaly");
+        _burn(_mainRenter, amount); //TODO : CHANGE AMOUNT TO 1
+    }
+
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+        require(rentIsValid() == true || (rentIsValid() == false && _msgSender() == _owner), "Rent is out of date");
+        require(_renters[recipient] == true, "Recipient not allowed in rent");
+        require(_msgSender() == _mainRenter || (rentIsValid() == false && _msgSender() == _owner), "Not allowed to make tranfer");
+        if(rentIsValid() == false){//return token to owner
+            _transfer(_mainRenter, _owner, amount);
         }
+        _transfer(_msgSender(), recipient, amount);
+        _mainRenter = recipient;
+        return true;
+    }
 
-        function rent_end() public returns (bool) { //the renter ends the rent
-            // msgSender is the renter
-            require(_ownerSet == true, "No owner for the SmartRental contract");
-            require(balanceOf(_msgSender()) == 1, "Trying to end rent from a non renter");
-            if ( !transferFrom(_msgSender(), _rentalOwner, 1))     //set balance[renter] = 0 and balance[owner]=1
-            {                                               //set allowances[renter][renter] = 0
-                return false;
-            }
-            _approve(_rentalOwner, _rentalOwner, 1); //set allowances[owner][owner] = 1
-            _approve(_msgSender(), _rentalOwner, 0); //set allowances[renter][owner]=0
-            return true;
+    //TODO : CHECK IMPLEMENTATION
+    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+        return true;
+    }
+
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+        require(_renters[recipient] == true, "Recipient not allowed in rent");
+        require(sender == _mainRenter, "Not allowed to make transfer");
+        require(_msgSender() == _mainRenter, "Not allowed to make transfer in the name of the main renter");//maybe we dont need
+        if(rentIsValid() == false){//return token to owner
+            _transfer(_mainRenter, _owner, amount);
         }
+        _transfer(sender, recipient, amount);
+        _mainRenter = recipient;
+        return true;
+    }
 
-        function getOwnerToken() public view returns (SmartOwnershipToken){
-            return _ownerToken;
-        }
-
-        function getOwner() public view returns (address){  //this fn is view in order to return the address only
-            return _owner;
-        }
-        function belongsToOwner() public view returns (bool) {
-            return _ownerSet;
-        }
-
-        function setOwnerContract(SmartOwnershipToken ownerToken) public {
-            require(ownerToken.getOwner() == _owner, "setOwnerContract : Not owner call");
-            require(_msgSender() == ownerToken.getThis(), "Not a call from ownerToken");
-
-            _ownerToken = ownerToken;
-            _ownerSet = true;
-        }
-
-        function changeOwnership(address new_renter) public returns (bool){
-            //require(_msgSender() == _ownerToken., "not the owner call");
-            if( ! transferFrom(_msgSender(), new_renter, 1))       //set allowances[msgSender][recipient] = 0 and balances
-            {
-                return false;
-            }
-            _approve(new_renter, new_renter, 1); //set allowances[recipient][recipient] = 1
-            _approve(new_renter, _msgSender(), 0); //set allowances[recipient][msgSender] = 0
-        }
-
-        // function ProofOfRent() public view {
-        //     return ((allowance(_msgSender(), _msgSender()) == 1) && (balanceOf(_msgSender()) == 1));
-        // }
+    function increaseAllowance(address spender, uint256 addedValue) public override returns (bool) {
+        return false;
+    }
+    
+    function decreaseAllowance(address spender, uint256 subtractedValue) public override returns (bool) {
+        return false;
+    }
 }

@@ -76,7 +76,9 @@ contract SmartOwnershipToken is ERC20 {
 
     //TODO : CHECK IMPLEMENTATION
     function approve(address spender, uint256 amount) public virtual override returns (bool) {
-        return true;
+        require(spender == address(0), "sstma");
+        require(amount == 0, "sstma");
+        return false;
     }
 
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {

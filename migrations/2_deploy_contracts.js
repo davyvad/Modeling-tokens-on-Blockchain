@@ -4,6 +4,7 @@ const RentalToken = artifacts.require("RentalToken");
 const OwnershipToken = artifacts.require("OwnershipToken");
 const SmartRentalToken = artifacts.require("SmartRentalToken");
 const SmartOwnershipToken = artifacts.require("SmartOwnershipToken");
+const ExtensionToken = artifacts.require("ExtensionToken");
 
 module.exports = function(deployer) {
   // deployer.deploy(ConvertLib);
@@ -19,6 +20,7 @@ module.exports = function(deployer) {
   //deployer.deploy(RentalToken, name, symbol);
   deployer.deploy(SmartOwnershipToken, name , symbol);
   deployer.deploy(SmartRentalToken, name, symbol);
+  deployer.deploy(ExtensionToken);
   //deployer.deploy(RentalToken, "rental1", "symb");
 
 };

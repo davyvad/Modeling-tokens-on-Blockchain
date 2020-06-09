@@ -6,11 +6,12 @@ import "../contracts/SmartRentalToken.sol";
 import "../contracts/ExtensionToken.sol";
 
 contract SmartOwnershipToken is ERC20 {
-    address private _owner;
+    address public _owner;
+    uint256 public val;
     SmartRentalToken private _renterToken;
     bool private _renterSet;
     mapping (string => ExtensionToken) public extensions;
-    list of param;
+    //list of param;
 
     constructor(string memory name, string memory symbol)
         ERC20(name, symbol)
@@ -19,6 +20,7 @@ contract SmartOwnershipToken is ERC20 {
         _mint(_msgSender(), 1);
         _owner = _msgSender();
         _renterSet = false;
+        val = 0;
     }
     modifier onlyOwner {
             require(_msgSender() == _owner, "Not owner call");
@@ -77,14 +79,25 @@ contract SmartOwnershipToken is ERC20 {
         return true;
     }
 
-    function addExtension(string extensionName, ExtensionToken extension) public {
+    function addExtension(string memory extensionName, ExtensionToken extension) public {
         extensions[extensionName] = extension;
     }
+   // event AddedValuesByDelegateCall(uint256 a, uint256 b, bool success);
 
-    function invokeExtension(/*string extensionName, list of params*/) public returns (bool){//without parameter
-        updata list of param;
-        return extensions["function1"].delegatecall(bytes4(keccak256("function1()")));
+    function invokeExtension(address extension /*string memory extensionName, list of params*/)
+    public
+    returns (uint256){//without parameter
+        uint256 res;
+        //updata list of param;
+     //   return  extensions[extensionName].delegatecall(bytes4(keccak256("function1()")));
+
+        (bool success, bytes memory result) = extension.delegatecall(abi.encodeWithSignature("deco(uint256)", 10));
+        //emit AddedValuesByDelegateCall(a, b, success);
+        _renterSet = success;
+        res = abi.decode(result, (uint256));
+        return res;
     }
+
     //TODO : CHECK IMPLEMENTATION
     function approve(address spender, uint256 amount) public virtual override returns (bool) {
         require(spender == address(0), "sstma");

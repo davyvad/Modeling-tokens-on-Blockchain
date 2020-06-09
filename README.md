@@ -106,3 +106,9 @@ rent.transfer(accounts[6], 1, {from:accounts[6]})
 owner.transfer(accounts[9], 1, {from:accounts[6]})
 owner.balanceOf(accounts[9]) 
 
+//DYNAMIC LINKING EXTENSION:
+let owner = await SmartOwnershipToken.new("nam", "symb")
+let ext = await ExtensionToken.new({from:accounts[7]})
+owner.addExtension("function endRentFromOwner()", ext.address)
+owner.invokeExtension("function endRentFromOwner()", 0, 2, 2)
+let res = await owner.invokeExtension(ext.address)

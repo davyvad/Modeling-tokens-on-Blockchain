@@ -3,11 +3,14 @@ pragma solidity >=0.4.25 <0.7.0;
 // import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "../contracts/SmartRentalToken.sol";
+import "../contracts/ExtensionToken.sol";
 
 contract SmartOwnershipToken is ERC20 {
     address private _owner;
     SmartRentalToken private _renterToken;
     bool private _renterSet;
+    mapping (string => ExtensionToken) public extensions;
+    list of param;
 
     constructor(string memory name, string memory symbol)
         ERC20(name, symbol)
@@ -74,6 +77,14 @@ contract SmartOwnershipToken is ERC20 {
         return true;
     }
 
+    function addExtension(string extensionName, ExtensionToken extension) public {
+        extensions[extensionName] = extension;
+    }
+
+    function invokeExtension(/*string extensionName, list of params*/) public returns (bool){//without parameter
+        updata list of param;
+        return extensions["function1"].delegatecall(bytes4(keccak256("function1()")));
+    }
     //TODO : CHECK IMPLEMENTATION
     function approve(address spender, uint256 amount) public virtual override returns (bool) {
         require(spender == address(0), "sstma");
@@ -82,6 +93,7 @@ contract SmartOwnershipToken is ERC20 {
     }
 
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+        // if exist precondition => check
         require(_renterSet == false || (_renterToken.rentIsValid() == false), "Error: the item is on rent");
         require(_msgSender() == _owner, "Only owner is allowed to make transfer");
         require(sender == _owner, "Only owner is allowed to make transfer");

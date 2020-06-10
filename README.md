@@ -108,7 +108,14 @@ owner.balanceOf(accounts[9])
 
 //DYNAMIC LINKING EXTENSION:
 let owner = await SmartOwnershipToken.new("nam", "symb")
-let ext = await ExtensionToken.new({from:accounts[7]})
+let ext = await ExtensionToken.new()
 owner.addExtension("function endRentFromOwner()", ext.address)
 owner.invokeExtension("function endRentFromOwner()", 0, 2, 2)
 let res = await owner.invokeExtension(ext.address)
+
+let a = await A.new()
+let b = await B.new()
+a.setVars(b.address, "compareStrings (string, string)")
+
+b.ExtentedFunctions(0)
+a.addExtension(b.address)

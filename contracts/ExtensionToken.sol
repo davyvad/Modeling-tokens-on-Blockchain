@@ -1,25 +1,25 @@
-pragma solidity >=0.4.25 <0.7.0;
+pragma solidity ^0.6.0;
 import "../contracts/SmartOwnershipToken.sol";
+import "../contracts/SmartRentalToken.sol";
 
 contract ExtensionToken{
     address public _owner;
     uint256 public val;
     SmartRentalToken private _renterToken;
-    bool private _renterSet;
+    bool public _renterSet;
     mapping (string => ExtensionToken) public extensions;
 
    constructor() public{
         _owner = msg.sender;
         val = 0;
+        _renterSet = false;
    }
 
-    function deco(uint value) /*uint32 a, uint32 b ,string memory functionname*/
+    function deco(uint a) /*uint32 a, uint32 b ,string memory functionname*/
     public
     returns (uint256){
-        require (value == 10, "problem");
-        require (value != 10, "problem");
+        val = a;
 
-        val = value;
         //prefunction
         //SmartOwnershipToken ownerToken = SmartOwnershipToken.at(_msgSender());
         //ownerToken.getParam();
@@ -31,7 +31,12 @@ contract ExtensionToken{
         //ownerToken.getParams();
         return 105;
     }
-
+    function invokeExtension(uint a)
+    public payable
+    {
+        val = a;
+        _renterSet = true;
+    }
     /*function1(SmartOwnershipToken token)public{
 
 

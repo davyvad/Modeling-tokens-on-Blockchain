@@ -1,4 +1,4 @@
-pragma solidity >=0.4.25 <0.7.0;
+pragma solidity ^0.6.0;
 
 // import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
@@ -9,7 +9,7 @@ contract SmartOwnershipToken is ERC20 {
     address public _owner;
     uint256 public val;
     SmartRentalToken private _renterToken;
-    bool private _renterSet;
+    bool public _renterSet;
     mapping (string => ExtensionToken) public extensions;
     //list of param;
 
@@ -84,18 +84,18 @@ contract SmartOwnershipToken is ERC20 {
     }
    // event AddedValuesByDelegateCall(uint256 a, uint256 b, bool success);
 
-    function invokeExtension(address extension /*string memory extensionName, list of params*/)
-    public
-    returns (uint256){//without parameter
-        uint256 res;
+    function invokeExtension(address extension, string memory _sign)
+    public payable
+    {
+        //without parameter
         //updata list of param;
-     //   return  extensions[extensionName].delegatecall(bytes4(keccak256("function1()")));
+        //   return  extensions[extensionName].delegatecall(bytes4(keccak256("function1()")));
 
-        (bool success, bytes memory result) = extension.delegatecall(abi.encodeWithSignature("deco(uint256)", 10));
+        (bool success, bytes memory result) = extension.delegatecall(
+            abi.encodeWithSignature("invokeExtension(string)", _sign));
         //emit AddedValuesByDelegateCall(a, b, success);
-        _renterSet = success;
-        res = abi.decode(result, (uint256));
-        return res;
+        //_renterSet = success;
+        //res = abi.decode(result, (uint256));
     }
 
     //TODO : CHECK IMPLEMENTATION

@@ -1,9 +1,10 @@
 pragma solidity ^0.6.0;
 import "../contracts/SmartRentalToken.sol";
 import "../contracts/ExtensionToken.sol";
-import "../contracts/Extension.sol";
+//import "../contracts/Extension.sol";
 
 contract A {
+    
     string public sign;
     address public _owner;
     bytes4 public val;
@@ -12,7 +13,7 @@ contract A {
     //mapping (string => ExtensionToken) public extensions;
     address public sender;
     address[] public extensions;
-    B.ExtType public _type;
+    //B.ExtType public _type;
 
     constructor()
     public
@@ -27,14 +28,14 @@ contract A {
 
     function check_preconditions(string memory _sign) public returns (bool) {
         for (uint i = 0; i < extensions.length; i++) {
-            B ext = B(extensions[i]);
-            for (uint j = 0; j < ext.numExtensions(); j++) {
-                (string memory str, B.ExtType typ) = ext.ExtentedFunctions(j);
-                if sign == str;
-                _type = typ;
-            }
+            //B ext = B(extensions[i]);
+           // for (uint j = 0; j < ext.numExtensions(); j++) {
+                //(string memory str, B.ExtType typ) = ext.ExtentedFunctions(j);
+                //if sign == str;
+                //_type = typ;
+           // }
         }
-        return true;
+        //return true;
     }
 
     function setVars(address _contract, string memory _sign) public payable {

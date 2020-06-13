@@ -119,3 +119,6 @@ a.setVars(b.address, "compareStrings (string, string)")
 
 b.ExtentedFunctions(0)
 a.addExtension(b.address)
+
+use of string utils from:
+https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol

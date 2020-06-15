@@ -34,7 +34,7 @@ contract SmartRentalToken is ERC20 {
 
     function returnRent() public {
         require(_msgSender() == _mainRenter, "Error: only mainRenter can return rent");
-        _ownerToken.endRentFromRenter();
+        //_ownerToken.endRentFromRenter();
     }
 
     function rentIsValid() public view returns (bool){

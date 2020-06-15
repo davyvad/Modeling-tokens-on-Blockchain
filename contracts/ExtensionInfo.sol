@@ -8,8 +8,9 @@ contract ExtensionInfo {
 
     struct Extension {
         string _methodSignature; // The method which is extended in Origin token
-        ExtType _type;
+        bool preCondition;
         string _extensionSignature; // The method which is called on delegatecall
+        uint256 arguments;
     }
     Extension[] public ExtendedFunctions;
     uint256 public numExtensions;
@@ -18,9 +19,9 @@ contract ExtensionInfo {
         numExtensions = 0;
     }
 
-    function addExtension(string memory methodSignature, bool _type, string memory extensionSignature) public{
-        ExtType exttype = (_type == true) ? ExtType.Precondition : ExtType.Postcondition;
-        ExtendedFunctions.push(Extension(methodSignature, exttype, extensionSignature));
+    function addExtension(string memory methodSignature, bool preCond, string memory extensionSignature, uint256 _parameters) public{
+       // ExtType exttype = (_type == true) ? ExtType.Precondition : ExtType.Postcondition;
+        ExtendedFunctions.push(Extension(methodSignature, preCond, extensionSignature, _parameters));
         numExtensions++;
     }
 
@@ -33,20 +34,13 @@ contract ExtensionInfo {
         }
     }
 
-    function check_preconditions(address _contract) public returns (bool) {
-        for (uint i = 0; i < ExtendedFunctions.length; i++) {
-            if(ExtendedFunctions[i]._type == ExtType.Precondition){
-      //          _contract.delegatecall(
-      //      abi.encodeWithSignature(ExtendedFunctions[i]._extensionSignature, _sign)
-      //  );
-            _contract.delegatecall(abi.encode(ExtendedFunctions[i]._extensionSignature));
-            }
-        }
-        return true;
-    }
-
     function getnumExtensions() public view returns (uint256){
         return numExtensions;
+    }
+
+    function getExtensionIndex(uint256 i) public view returns (string memory, bool, string memory, uint256){
+        return (ExtendedFunctions[i]._methodSignature, ExtendedFunctions[i].preCondition,
+                ExtendedFunctions[i]._extensionSignature, ExtendedFunctions[i].arguments);
     }
 
     function compare(string memory _a, string memory _b) private returns (int) {

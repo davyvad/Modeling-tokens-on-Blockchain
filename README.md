@@ -85,7 +85,7 @@ let array = [accounts[7], accounts[8]]
 owner.startRent(array, 3 {from:accounts[6]})
 let rentA = await owner.getRentalToken()
 let rent = await SmartRentalToken.at(rentA)
-//should fail:
+//should fail:awa
 rent.transfer(accounts[9], 1, {from:accounts[6]}) 
 //should succeed:
 rent.transfer(accounts[7], 1, {from:accounts[6]}) 
@@ -108,7 +108,18 @@ owner.balanceOf(accounts[9])
 
 //DYNAMIC LINKING EXTENSION:
 let owner = await SmartOwnershipToken.new("nam", "symb")
-let ext = await ExtensionToken.new()
+let ext = await OwnershipExtension.new()
+let methodSignature = ""
+let preCond = true
+let extensionSignature = "setVal()"
+let val = await owner.getVal.call()
+val.valueOf()
+let _parameters = 0
+ext.addExtension(methodSignature, preCond, extensionSignature, _parameters) 
+let extensionName = "FirstExtension"
+owner.addExtension(extensionName, ext.address)
+let result = await owner.check_preconditions()
+
 owner.addExtension("function endRentFromOwner()", ext.address)
 owner.invokeExtension("function endRentFromOwner()", 0, 2, 2)
 let res = await owner.invokeExtension(ext.address)
@@ -121,3 +132,6 @@ b.ExtentedFunctions(0)
 a.addExtension(b.address)
 b.setA(a.address)
 b.decod()
+
+use of string utils from:
+https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol

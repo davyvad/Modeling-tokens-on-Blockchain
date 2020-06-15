@@ -1,9 +1,10 @@
 pragma solidity ^0.6.0;
 import "../contracts/SmartRentalToken.sol";
 import "../contracts/ExtensionToken.sol";
-import "../contracts/Extension.sol";
+//import "../contracts/Extension.sol";
 
 contract A {
+    
     string public sign;
     address public _owner;
     bytes4 public val;
@@ -12,7 +13,7 @@ contract A {
     mapping (uint => bytes) public extensionsData;
     address public sender;
     address[] public extensions;
-    B.ExtType public _type;
+    //B.ExtType public _type;
 
     constructor()
     public
@@ -44,7 +45,7 @@ contract A {
                 }
             }
         }
-        return true;
+        //return true;
     }
 
     function setVars(address _contract, string memory _sign)

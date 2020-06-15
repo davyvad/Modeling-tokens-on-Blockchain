@@ -119,3 +119,5 @@ a.setVars(b.address, "compareStrings (string, string)")
 
 b.ExtentedFunctions(0)
 a.addExtension(b.address)
+b.setA(a.address)
+b.decod()

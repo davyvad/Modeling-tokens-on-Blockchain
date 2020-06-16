@@ -124,14 +124,17 @@ owner.addExtension("function endRentFromOwner()", ext.address)
 owner.invokeExtension("function endRentFromOwner()", 0, 2, 2)
 let res = await owner.invokeExtension(ext.address)
 
-let a = await A.new()
-let b = await B.new()
-a.setVars(b.address, "compareStrings (string, string)")
-
-b.ExtentedFunctions(0)
-a.addExtension(b.address)
-b.setA(a.address)
-b.decod()
+let a = await DynamicOwnership.new()
+let b = await Extension.new()
+a.addExtension("Extension", b.address)
+let params = await web3.eth.abi.encodeParameters(['address[]', 'uint'], [accounts, '3'])
+a.invoke("Extension", "startRent", params)
 
 use of string utils from:
 https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol
+
+To encode from console : 
+Single param : 
+    web3.eth.abi.encodeParameter('address[]', accounts)
+Multiple params: 
+    web3.eth.abi.encodeParameters(['address[]', 'uint'], [accounts, '3'])

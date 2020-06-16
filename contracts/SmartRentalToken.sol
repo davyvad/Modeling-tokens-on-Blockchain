@@ -1,7 +1,7 @@
 pragma solidity >=0.4.25 <0.7.0;
 
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "../contracts/SmartOwnershipToken.sol";
+//import "../contracts/SmartOwnershipToken.sol";
 
 contract SmartRentalToken is ERC20 {
     address private _owner;

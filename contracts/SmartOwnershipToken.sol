@@ -3,20 +3,10 @@ pragma solidity ^0.6.0;
 // import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "../contracts/SmartRentalToken.sol";
-import "../contracts/OwnershipExtension.sol";
+//import "../contracts/OwnershipExtension.sol";
 import "../contracts/ExtensionInfo.sol";
 
 contract SmartOwnershipToken is ERC20 {
-
-    //////////////////////////////////////////////////////////////////////////
-    enum ExtType {Precondition, Postcondition }
-
-    struct Extension {
-        string _methodSignature; // The method which is extended in Origin token
-        ExtType _type;
-        string _extensionSignature; // The method which is called on delegatecall
-        uint256 arguments;
-    }
     //////////////////////////////////////////////////////////////////////////
 
     address public _owner;

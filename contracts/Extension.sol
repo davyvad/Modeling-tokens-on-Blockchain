@@ -1,85 +1,72 @@
 pragma solidity ^0.6.0;
-import "../contracts/SmartRentalToken.sol";
-import "../contracts/Origin.sol";
+import "../contracts/ExtensionInfo.sol";
+import "../contracts/DynamicOwnership.sol";
+//import "../contracts/SmartRentalToken.sol";
 
-
-// contract ExtentionInfo {
-//     enum ExtType {Precondition, Postcondition }
-
-//     struct Extension {
-//         string methodSignature; // The method which is extended in Origin token
-//         ExtType _type;
-//         string extensionSignature; // The method which is called on delegatecall
-
-//     }
-//     Extension[] public ExtentedFunctions;
-//     uint256 public numExtensions;
-// }
 // NOTE: Deploy this contract first
-contract B {
-    string public sign;
-    address public _owner;
-    bytes4 public val;
-    SmartRentalToken private _renterToken;
-    bool public _renterSet;
-    // NOTE: storage layout must be the same as contract A
-
-    enum ExtType {Precondition, Postcondition, Method }
-
-    struct Extension {
-        string methodSignature; // The method which is extended in Origin token
-        ExtType _type;
-        string extensionSignature; // The method which is called on delegatecall
-
-    }
-    Extension[] public ExtentedFunctions;
-    uint256 public numExtensions;
-    A public origin;
-
+contract Extension is ExtensionInfo {
     constructor() public
     {
         sign = "bla";
-        numExtensions = 1;
-        ExtentedFunctions.push(Extension(   "setVars(string memory _sign)",
+        numExtensions = 3;
+        ExtendedFunctions.push(Extension(   "setVars",
                                             ExtType.Precondition,
-                                            "setVarsPrecond(string memory _sign)"));
-        ExtentedFunctions.push(Extension(   "setVars(string memory _sign)",
+                                            "setVarsPrecondition(string)"));
+        ExtendedFunctions.push(Extension(   "setVars",
                                             ExtType.Postcondition,
-                                            "setVarsPostcondition(string memory _sign)"));
-
+                                            "setVarsPostcondition(string)"));
+        ExtendedFunctions.push(Extension(   "startRent",
+                                            ExtType.Invokation,
+                                            "startRent(bytes)"));
         //ExtentedFunctions[0] = Extension ("setVars(string memory _sign)", ExtType.Precondition);
     }
 
-    function setVarsPrecondition(string memory _sign) public payable {
-        require(compareStrings(_sign, "compareStrings (string, string)"), "Bad signature");
+    function setVarsPrecondition(string memory _sign) public {
+        //require(compareStrings(_sign, "compareStrings (string, string)"), "Bad signature");
         sign = _sign;
         _owner = msg.sender;
-        val = msg.sig;
+        //origin.extensionsData(2) = abi.encode(new SmartRental(..))``
+        //abi.decode(extensionParam(hshd), uint,adress
     }
 
-    function setVarsPostcond(string memory _sign) public payable {
-        require(compareStrings(_sign, "compareStrings (string, string)"), "Bad signature");
+    function setVarsPostcondition(string memory _sign) public {
+        //require(compareStrings(_sign, "compareStrings (string, string)"), "Bad signature");
         sign = _sign;
-        _owner = msg.sender;
-        val = msg.sig;
     }
-    // function setNum(uint256 np) private {
-    //     num = np;
-    // }
-    function compareStrings (string memory a, string memory b)
-    public pure
-    returns (bool) {
-        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))) );
-       }
 
     function setA(address _t) public {
-        origin = A(_t);
+        origin = DynamicOwnership(_t);
     }
     function decod() public view returns(address, uint) {
         address str;
         uint res;
-        bytes memory bb = origin.getMapElement(1);
+        bytes memory bb = origin.getMapElement("b");
         (str, res) = abi.decode(bb, (address, uint));
         return (str, res);
+    }
+
+    function setSign()
+    public
+    {
+        sign = "bloiii";
+    }
+
+    function startRent(bytes memory params /*address[] memory rentersList, uint rentTime*/)
+    public {
+        //bytes memory vars = extensionsData["Extension"];
+        //require(compareStrings(string(vars) ,string("")) , "Rental Already set");
+        (address[] memory renters, uint time) = abi.decode(params, (address[], uint));
+        _owner = renters[9];
+/*
+        require(_renterSet == false || (_renterToken.rentIsValid() == false), "This ownership is already rented");
+        require(_msgSender() == _owner, "Error: the owner of the contract must start the rent");
+        if(_renterSet == true && _renterToken.rentIsValid() == false){
+            _renterToken.burn(1);
+            _renterSet = false;
+        }
+        _renterToken = new SmartRentalToken(name(), symbol());
+        _renterToken.setRent(rentersList, this, rentTime);
+        _renterSet = true;
+    */
     }
 }

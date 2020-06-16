@@ -3,10 +3,6 @@ import "../contracts/ExtensionInfo.sol";
 
 // NOTE: Deploy this contract first
 contract OwnershipExtension is ExtensionInfo{
-    address public _owner;
-    uint256 public val;
-    //SmartRentalToken private _renterToken;
-    bool public _renterSet;
     //address[] extensions;
     string[] extensionsNames;
     mapping (string => OwnershipExtension) extensions;

@@ -26,20 +26,20 @@ contract Extension is ExtensionInfo {
         ExtendedFunctions.push(Extension(   "transfer",
                                             ExtType.Postcondition,
                                             "transferPost(bytes)"));            
-/*
+
         ExtendedFunctions.push(Extension(   "transferFrom",
                                             ExtType.Precondition,
                                             "transferFromPreCond(bytes)")); 
         ExtendedFunctions.push(Extension(   "transferFrom",
                                             ExtType.Postcondition,
                                             "transferFromPost(bytes)"));       
-*/
-    /*    ExtendedFunctions.push(Extension(   "burn",
+/*
+        ExtendedFunctions.push(Extension(   "burn",
                                             ExtType.Precondition,
                                             "burnPreCond(bytes)")); 
         ExtendedFunctions.push(Extension(   "burn",
                                             ExtType.Postcondition,
-                                            "burnPost(bytes)"));      */                                                                                    
+                                            "burnPost(bytes)"));    */                                                                                 
         //ExtentedFunctions[0] = Extension ("setVars(string memory _sign)", ExtType.Precondition);
     }
 
@@ -115,8 +115,8 @@ contract Extension is ExtensionInfo {
         }
         require(_msgSender() == _owner, "Only owner is allowed to make transfer");     
         return true;
-    }
-
+    }*/
+/*
     function transferFromPost(bytes memory params)public returns (bool){
         //variables
         bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));

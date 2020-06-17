@@ -95,7 +95,8 @@ contract Extension is ExtensionInfo {
         //address msgSender = abi.decode(extensionsData["msgSender"], (address));
         //_owner = msg.sender;
         bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
-        DynamicRental renterToken = abi.decode( initialData( "Extension_renterToken", abi.encode(new DynamicRental("Rental Token", "Rent", msg.sender, renters, time) ) ) , (DynamicRental));
+        DynamicRental renterToken = new DynamicRental("Rental Token", "Rent", msg.sender, renters, time);
+        renterToken = DynamicRental(abi.decode( initialData( "Extension_renterToken", abi.encode( address(renterToken) ) ) , (address)) );
         require(renterSet == false || (renterToken.rentIsValid() == false), "This ownership is already rented");
         require(msg.sender == _owner, "Error: the owner of the contract must start the rent");
         if(renterSet == true && renterToken.rentIsValid() == false){
@@ -104,6 +105,7 @@ contract Extension is ExtensionInfo {
         }
         //renterToken.setRent(rentersList, this, rentTime);
         extensionsData["Extension_renterSet"] = abi.encode(true);
+        extensionsData["Extension_renterToken"] = abi.encode(address(renterToken));
 
      //   require(renterSet == false, "This ownership is already rented");
 /*

@@ -2,9 +2,10 @@ pragma solidity ^0.6.0;
 //import "../node_modules/openzeppelin-solidity/contracts/utils/Strings.sol";
 //import "../contracts/SmartRentalToken.sol";
 import "../contracts/DynamicOwnership.sol";
+import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 
-contract ExtensionInfo {
+contract ExtensionInfo is ERC20{
     string public sign;
     address public _owner;
     mapping (string => bytes) public extensionsData;
@@ -20,12 +21,32 @@ contract ExtensionInfo {
     }
     Extension[] public ExtendedFunctions;
     uint256 public numExtensions;
-    DynamicOwnership public origin;
+    //DynamicOwnership public origin;
 
-    constructor() public {}
+    constructor()
+    ERC20("Informations", "Extension")
+    public {}
 
     function getnumExtensions() public view returns (uint256){
         return numExtensions;
+    }
+
+    function getData(string memory name) public view returns (bytes memory){
+        return extensionsData[name];
+    }
+
+    function initialData(string memory varName, bytes memory value) public returns (bytes memory){
+        //Get the data of a variable and if the data was never set define it!
+        bytes memory testData = extensionsData[varName];
+        //flag allows us to check if the data is not set (ie if the bytes at this place is 0)
+        bool flag;
+        assembly {
+            flag := eq(eq(sload(testData),0),1)
+        }
+        if( flag == true){
+            extensionsData[varName] = value;
+        }
+        return extensionsData[varName];
     }
 
    /* function setA(address _t) public {

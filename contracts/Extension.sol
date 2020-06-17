@@ -1,14 +1,14 @@
 pragma solidity ^0.6.0;
 import "../contracts/ExtensionInfo.sol";
 import "../contracts/DynamicOwnership.sol";
-//import "../contracts/SmartRentalToken.sol";
+import "../contracts/DynamicRental.sol";
 
 // NOTE: Deploy this contract first
 contract Extension is ExtensionInfo {
     constructor() public
     {
         sign = "bla";
-        numExtensions = 3;
+        numExtensions = 5;
         ExtendedFunctions.push(Extension(   "setVars",
                                             ExtType.Precondition,
                                             "setVarsPrecondition(string)"));
@@ -18,6 +18,13 @@ contract Extension is ExtensionInfo {
         ExtendedFunctions.push(Extension(   "startRent",
                                             ExtType.Invokation,
                                             "startRent(bytes)"));
+
+        ExtendedFunctions.push(Extension(   "transfer",
+                                            ExtType.Precondition,
+                                            "transferPreCond(bytes)")); 
+        ExtendedFunctions.push(Extension(   "transfer",
+                                            ExtType.Postcondition,
+                                            "transferPost(bytes)"));                                            
         //ExtentedFunctions[0] = Extension ("setVars(string memory _sign)", ExtType.Precondition);
     }
 
@@ -34,16 +41,7 @@ contract Extension is ExtensionInfo {
         sign = _sign;
     }
 
-    function setA(address _t) public {
-        origin = DynamicOwnership(_t);
-    }
-    function decod() public view returns(address, uint) {
-        address str;
-        uint res;
-        bytes memory bb = origin.getMapElement("b");
-        (str, res) = abi.decode(bb, (address, uint));
-        return (str, res);
-    }
+    
 
     function setSign()
     public
@@ -51,12 +49,63 @@ contract Extension is ExtensionInfo {
         sign = "bloiii";
     }
 
+    function transferPreCond(bytes memory params) public returns (bool) {
+        bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
+        
+        (address recipient, uint256 amount) = abi.decode(params, (address, uint256));
+
+        require(amount == 1, "Requesting tranfer for more than one unit");
+        //require(renterSet == false || (renterToken.rentIsValid() == false), "Error: the item is on rent");
+        if(renterSet == true ){
+            DynamicRental renterToken = abi.decode( extensionsData["Extension_renterToken"], (DynamicRental) );
+            require(renterToken.rentIsValid() == false, "Error: the item is on rent");
+        }else{
+            require(renterSet == false , "Error: the item is on rent"); //not really needed actually
+        }
+        require(_msgSender() == _owner, "Only owner is allowed to make transfer");        
+        return true;
+    }
+
+    function transferPost(bytes memory params)public returns (bool){
+        //variables
+        bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
+        //DynamicRental renterToken = abi.decode( initialData( "Extension_renterToken", abi.encode(new DynamicRental("Rental Token", "Rent", msg.sender, renters, time) ) ) , (DynamicRental));
+
+        //parameters
+        (address recipient, uint256 amount) = abi.decode(params, (address, uint256));
+
+        _owner = recipient;
+        if(renterSet == true ){
+            DynamicRental renterToken = abi.decode( extensionsData["Extension_renterToken"], (DynamicRental) );
+            if(renterToken.rentIsValid() == false){//burn the rent
+                renterToken.burn(1);
+                extensionsData["Extension_renterSet"] = abi.encode(false);
+            }
+        }
+        return true;
+    }
+
     function startRent(bytes memory params /*address[] memory rentersList, uint rentTime*/)
     public {
         //bytes memory vars = extensionsData["Extension"];
         //require(compareStrings(string(vars) ,string("")) , "Rental Already set");
         (address[] memory renters, uint time) = abi.decode(params, (address[], uint));
-        _owner = renters[9];
+        //_owner = renters[9];
+        //extensionsData["msgssender"] = abi.encode(msg.sender);
+        //address msgSender = abi.decode(extensionsData["msgSender"], (address));
+        //_owner = msg.sender;
+        bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
+        DynamicRental renterToken = abi.decode( initialData( "Extension_renterToken", abi.encode(new DynamicRental("Rental Token", "Rent", msg.sender, renters, time) ) ) , (DynamicRental));
+        require(renterSet == false || (renterToken.rentIsValid() == false), "This ownership is already rented");
+        require(msg.sender == _owner, "Error: the owner of the contract must start the rent");
+        if(renterSet == true && renterToken.rentIsValid() == false){
+            renterToken.burn(1);
+            extensionsData["Extension_renterSet"] = abi.encode(false);
+        }
+        //renterToken.setRent(rentersList, this, rentTime);
+        extensionsData["Extension_renterSet"] = abi.encode(true);
+
+     //   require(renterSet == false, "This ownership is already rented");
 /*
         require(_renterSet == false || (_renterToken.rentIsValid() == false), "This ownership is already rented");
         require(_msgSender() == _owner, "Error: the owner of the contract must start the rent");

@@ -124,11 +124,22 @@ owner.addExtension("function endRentFromOwner()", ext.address)
 owner.invokeExtension("function endRentFromOwner()", 0, 2, 2)
 let res = await owner.invokeExtension(ext.address)
 
-let a = await DynamicOwnership.new()
+let a = await DynamicOwnership.new("MyCar", "Car")
 let b = await Extension.new()
 a.addExtension("Extension", b.address)
 let params = await web3.eth.abi.encodeParameters(['address[]', 'uint'], [accounts, '3'])
-a.invoke("Extension", "startRent", params)
+a.invokeExtension("Extension", "startRent", params)
+rentA = await a.getMapElement("Extension_renterToken") //JUSQUE LA CA MARCHE => on a un code dune adresse jai pas reussi a decoder ca
+addrRentA = await web3.eth.abi.decodeParameters(rentA, ['address'])
+rent = await DynamicRental.at(rentA)
+let s = a.getMapElement("msgssender")
+
+//Transfer fonctionne :
+a.transfer(accounts[3],1)
+a.balanceOf(accounts[3]) //works fine!
+
+//CONVENTION: a variable a of an Extension named B in the mapping extensionsData is stored under the string "B_a"
+
 
 use of string utils from:
 https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol

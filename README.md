@@ -129,10 +129,14 @@ let b = await Extension.new()
 a.addExtension("Extension", b.address)
 let params = await web3.eth.abi.encodeParameters(['address[]', 'uint'], [accounts, '3'])
 a.invokeExtension("Extension", "startRent", params)
-rentA = await a.getMapElement("Extension_renterToken") //JUSQUE LA CA MARCHE => on a un code dune adresse jai pas reussi a decoder ca
-addrRentA = await web3.eth.abi.decodeParameters(rentA, ['address'])
-rent = await DynamicRental.at(rentA)
-let s = a.getMapElement("msgssender")
+rentA = await a.getMapElement("Extension_renterToken") 
+let addrRentA = await web3.eth.abi.decodeParameters(['address'], rentA)
+addrRentA = addrRentA['0']
+let renterToken = await DynamicRental.at(addrRentA)
+let bal0 = await renterToken.balanceOf(accounts[0])
+renterToken.transfer(accounts[3], 1)
+bal0 = await renterToken.balanceOf(accounts[3]) //should be 1
+
 
 //Transfer fonctionne :
 a.transfer(accounts[3],1)

@@ -8,13 +8,14 @@ contract Extension is ExtensionInfo {
     constructor() public
     {
         sign = "bla";
-        numExtensions = 5;
-        ExtendedFunctions.push(Extension(   "setVars",
+        numExtensions = 3;
+ /*       ExtendedFunctions.push(Extension(   "setVars",
                                             ExtType.Precondition,
                                             "setVarsPrecondition(string)"));
         ExtendedFunctions.push(Extension(   "setVars",
                                             ExtType.Postcondition,
                                             "setVarsPostcondition(string)"));
+*/
         ExtendedFunctions.push(Extension(   "startRent",
                                             ExtType.Invokation,
                                             "startRent(bytes)"));
@@ -24,7 +25,21 @@ contract Extension is ExtensionInfo {
                                             "transferPreCond(bytes)")); 
         ExtendedFunctions.push(Extension(   "transfer",
                                             ExtType.Postcondition,
-                                            "transferPost(bytes)"));                                            
+                                            "transferPost(bytes)"));            
+/*
+        ExtendedFunctions.push(Extension(   "transferFrom",
+                                            ExtType.Precondition,
+                                            "transferFromPreCond(bytes)")); 
+        ExtendedFunctions.push(Extension(   "transferFrom",
+                                            ExtType.Postcondition,
+                                            "transferFromPost(bytes)"));       
+*/
+    /*    ExtendedFunctions.push(Extension(   "burn",
+                                            ExtType.Precondition,
+                                            "burnPreCond(bytes)")); 
+        ExtendedFunctions.push(Extension(   "burn",
+                                            ExtType.Postcondition,
+                                            "burnPost(bytes)"));      */                                                                                    
         //ExtentedFunctions[0] = Extension ("setVars(string memory _sign)", ExtType.Precondition);
     }
 
@@ -84,7 +99,65 @@ contract Extension is ExtensionInfo {
         }
         return true;
     }
+/*
+    function transferFromPreCond(bytes memory params) public returns (bool) {
+        bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
+        
+        (address sender, address recipient, uint256 amount) = abi.decode(params, (address, address, uint256));
 
+        require(amount == 1, "Requesting tranfer for more than one unit");
+        //require(renterSet == false || (renterToken.rentIsValid() == false), "Error: the item is on rent");
+        if(renterSet == true ){
+            DynamicRental renterToken = abi.decode( extensionsData["Extension_renterToken"], (DynamicRental) );
+            require(renterToken.rentIsValid() == false, "Error: the item is on rent");
+        }else{
+            require(renterSet == false , "Error: the item is on rent"); //not really needed actually
+        }
+        require(_msgSender() == _owner, "Only owner is allowed to make transfer");     
+        return true;
+    }
+
+    function transferFromPost(bytes memory params)public returns (bool){
+        //variables
+        bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
+        //DynamicRental renterToken = abi.decode( initialData( "Extension_renterToken", abi.encode(new DynamicRental("Rental Token", "Rent", msg.sender, renters, time) ) ) , (DynamicRental));
+
+        //parameters
+        (address sender, address recipient, uint256 amount) = abi.decode(params, (address, address, uint256));
+
+        _owner = recipient;
+        if(renterSet == true ){
+            DynamicRental renterToken = abi.decode( extensionsData["Extension_renterToken"], (DynamicRental) );
+            if(renterToken.rentIsValid() == false){//burn the rent
+                renterToken.burn(1);
+                extensionsData["Extension_renterSet"] = abi.encode(false);
+            }
+        }
+        return true;
+    }*/
+/*
+    function burnPreCond(bytes memory params) public returns(bool){
+        bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
+        
+        (uint256 amount) = abi.decode(params, (uint256));
+
+        require(_msgSender() == _owner, "Trying to burn illegaly");
+
+        if(renterSet == true ){
+            DynamicRental renterToken = abi.decode( extensionsData["Extension_renterToken"], (DynamicRental) );
+            require((renterToken.rentIsValid() == false) || (renterToken.mainRenter() == _owner), "Error: the item is on rent");
+            renterToken.burn(1);
+            extensionsData["Extension_renterSet"] = abi.encode(false);
+        }else{
+            require(renterSet == false , "Error: the item is on rent"); //not really needed actually
+        }
+
+    }
+
+    function burnPost(bytes memory params) public returns (bool){
+        return true;
+    }
+*/
     function startRent(bytes memory params /*address[] memory rentersList, uint rentTime*/)
     public {
         //bytes memory vars = extensionsData["Extension"];

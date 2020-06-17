@@ -69,10 +69,25 @@ contract DynamicOwnership is ERC20{
     }
 
 
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
         require(invokePreCond("transfer", abi.encode(recipient, amount)), "Preconditions didn't pass");
         _transfer(_msgSender(), recipient, amount);
         require(invokePost("transfer", abi.encode(recipient,amount)), "PostCondition didn't pass");
+        return true;
+    }
+
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+        require(invokePreCond("transferFrom", abi.encode(sender, recipient, amount)), "Preconditions didn't pass");
+        _transfer(sender, recipient, amount);
+        require(invokePost("transferFrom", abi.encode(sender, recipient,amount)), "PostCondition didn't pass");
+        return true;
+    }
+ 
+    function burn(uint amount) public returns (bool) {
+        require(invokePreCond("burn", abi.encode(amount)), "Preconditions didn't pass");
+        _burn(_msgSender(), amount); //TODO : CHANGE AMOUNT TO 1
+        require(invokePost("burn", abi.encode(amount)), "PostCondition didn't pass");
+        return true;
     }
 
 

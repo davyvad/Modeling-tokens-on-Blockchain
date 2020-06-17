@@ -21,10 +21,11 @@ contract DynamicRental is ERC20 {
             _mainRenter = owner;
             createdTimestamp = block.timestamp;
             _rentTime = rentTime;
+            _mint(owner, 1);
 
         }
 
-    function setRent(address[] memory rentersList, DynamicOwnership owner, uint rentTime) public returns (bool){
+  /*  function setRent(address[] memory rentersList, DynamicOwnership owner, uint rentTime) public returns (bool){
         //to add: require(_msgSender() == owner.getThis(), "Trying to set the rent from not owner account");
         //to add: _mint(owner.getOwner(), 1);
         //to add: _owner = owner.getOwner();
@@ -36,7 +37,7 @@ contract DynamicRental is ERC20 {
         _ownerToken = owner;
         _rentTime = rentTime;
 
-    }
+    }*/
 
     function returnRent() public {
         require(_msgSender() == _mainRenter, "Error: only mainRenter can return rent");
@@ -85,6 +86,7 @@ contract DynamicRental is ERC20 {
         require(_msgSender() == _mainRenter, "Not allowed to make transfer in the name of the main renter");//maybe we dont need
         if(rentIsValid() == false){//return token to owner
             _transfer(_mainRenter, _owner, amount);
+            return true;
         }
         _transfer(sender, recipient, amount);
         _mainRenter = recipient;

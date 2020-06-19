@@ -32,11 +32,6 @@ contract SmartRentalToken is ERC20 {
 
     }
 
-    function returnRent() public {
-        require(_msgSender() == _mainRenter, "Error: only mainRenter can return rent");
-        _ownerToken.endRentFromRenter();
-    }
-
     function rentIsValid() public view returns (bool){
         return ( _rentTime * 1 minutes >= now - createdTimestamp );
     }
@@ -66,13 +61,6 @@ contract SmartRentalToken is ERC20 {
         return true;
     }
 
-    //TODO : CHECK IMPLEMENTATION
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
-        require(spender == address(0), "sstma");
-        require(amount == 0, "sstma");
-        return true;
-    }
-
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
         require(_renters[recipient] == true, "Recipient not allowed in rent");
         require(sender == _mainRenter, "Not allowed to make transfer");
@@ -85,15 +73,4 @@ contract SmartRentalToken is ERC20 {
         return true;
     }
 
-    function increaseAllowance(address spender, uint256 addedValue) public override returns (bool) {
-        require(spender == address(0), "sstma");
-        require(addedValue == 0, "sstma");
-        return false;
-    }
-    
-    function decreaseAllowance(address spender, uint256 subtractedValue) public override returns (bool) {
-        require(spender == address(0), "sstma");
-        require(subtractedValue == 0, "sstma");        
-        return false;
-    }
 }

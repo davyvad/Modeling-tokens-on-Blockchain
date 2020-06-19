@@ -1,6 +1,5 @@
 pragma solidity >=0.4.25 <0.7.0;
 
-// import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "../contracts/SmartRentalToken.sol";
 
@@ -48,20 +47,6 @@ contract SmartOwnershipToken is ERC20 {
         _renterSet = true;
     }
 
-    function endRentFromRenter() public {
-        require(_renterSet == true, "The product is not on rent");
-        require(_msgSender() == _renterToken.mainRenter(), "Request for end must be from main renter");
-        _renterToken.burn(1);
-        _renterSet = false;
-    }
-
-    function endRentFromOwner() public onlyOwner{
-        require(_renterSet == true, "The product is not on rent");
-        require(_renterToken.rentIsValid() == false, "Rent is not finished yet");
-        _renterToken.burn(1);
-        _renterSet = false;
-    }
-
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
         require(_renterSet == false || (_renterToken.rentIsValid() == false), "Error: the item is on rent");
         require(_msgSender() == _owner, "Only owner is allowed to make transfer");
@@ -72,13 +57,6 @@ contract SmartOwnershipToken is ERC20 {
             _renterSet = false;
         }
         return true;
-    }
-
-    //TODO : CHECK IMPLEMENTATION
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
-        require(spender == address(0), "sstma");
-        require(amount == 0, "sstma");
-        return false;
     }
 
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {

@@ -35,18 +35,21 @@ contract ExtensionInfo is ERC20{
         return extensionsData[name];
     }
 
-    function initialData(string memory varName, bytes memory value) public returns (bytes memory){
+    function initialData(string memory varName, bytes memory value) public view returns (bytes memory){
         //Get the data of a variable and if the data was never set define it!
         bytes memory testData = extensionsData[varName];
+        if (testData.length == 0) {
+            return value;
+        }
+        return extensionsData[varName];
+
         //flag allows us to check if the data is not set (ie if the bytes at this place is 0)
-        bool flag;
-        assembly {
+        /*assembly {
             flag := eq(eq(sload(testData),0),1)
         }
         if( flag == true){
             extensionsData[varName] = value;
-        }
-        return extensionsData[varName];
+        }*/
     }
 
    /* function setA(address _t) public {

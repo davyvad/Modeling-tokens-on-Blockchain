@@ -33,25 +33,28 @@ contract DynamicOwnership is ERC20{
 
     function addExtension(string memory extName, address extension)
     public {
+        if(address(0) != address(extensions[extName]))
+            return;
         extensionNames.push(extName);
         extensions[extName] = (ExtensionInfo(extension)); //[extensionName] = extension;
     }
 
-    //TODO: check if this function works fine (or is it leaving a gap??)
+    // This functions leaves a gap in extensionNames list where there was extName
     function removeExtension(string memory extName)
     public {
-        for (uint i = 0; i<extensionNames.length; i++){
+        for (uint i = 0; i < extensionNames.length; i++){
             if(compareStrings(extName, extensionNames[i])){
                 delete extensionNames[i];
+                delete extensions[extName];
+
             }
         }
-        delete extensions[extName];
     }
 
     function invokeExtension(string memory extName, string memory signature, bytes memory params)
     public
     {
-        invokeHelper(signature, ExtensionInfo.ExtType.Invokation, extName, params);
+        require(invokeHelper(signature, ExtensionInfo.ExtType.Invokation, extName, params), "invokeExtension didn't suceed");
     }
 
     function invokePreCond(string memory signature, bytes memory params)
@@ -78,11 +81,13 @@ contract DynamicOwnership is ERC20{
 
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
         require(invokePreCond("transferFrom", abi.encode(sender, recipient, amount)), "Preconditions didn't pass");
+        require(_msgSender() == _owner, "Only owner is allowed to make transfer");
         _transfer(sender, recipient, amount);
+        _owner = recipient;
         require(invokePost("transferFrom", abi.encode(sender, recipient,amount)), "PostCondition didn't pass");
         return true;
     }
- 
+
     function burn(uint amount) public returns (bool) {
         require(invokePreCond("burn", abi.encode(amount)), "Preconditions didn't pass");
         _burn(_msgSender(), amount); //TODO : CHANGE AMOUNT TO 1
@@ -99,19 +104,25 @@ contract DynamicOwnership is ERC20{
     {
         for (uint i = 0; i < extensionNames.length; i++) {
             ExtensionInfo ext = extensions[extensionNames[i]];
+            if(address(0) == address(ext))
+                continue;
             for (uint j = 0; j < ext.numExtensions(); j++) {
                 (string memory extended, ExtensionInfo.ExtType condType, string memory extSignature) = ext.ExtendedFunctions(j);
                 if (compareStrings(extended, sig) && condType == _condType) {
-                    if (condType == ExtensionInfo.ExtType.Invokation &&
-                        !compareStrings(extensionNames[i], extName)) {
-                            continue;
-                        }
-                        return delegate(address(ext), extSignature, params);
+                    if (_condType == ExtensionInfo.ExtType.Invokation &&
+                        compareStrings(extensionNames[i], extName)) {
+                            // The good extension and the good invokation succeeded
+                            return delegate(address(ext), extSignature, params);
+                    } else {
+                        assert(delegate(address(ext), extSignature, params));
+                    }
                 }
             }
         }
         require(1 == 2, "Did not find contract\n"); //TODO: remove
-        return false;
+        if(_condType == ExtensionInfo.ExtType.Invokation)
+            return false;
+        return true;
     }
 
     function delegate(address extContract, string memory _extSignature, bytes memory params)
@@ -120,18 +131,7 @@ contract DynamicOwnership is ERC20{
     {
         (bool success, bytes memory data) = extContract.delegatecall(
                         abi.encodeWithSignature(_extSignature, params));
-        require(success, "Did not succeed\n");
         return success;
-    }
-
-
-    function setVarsDelegate(string memory _sign)
-    public
-    payable
-    {
-        require(invokeHelper(_sign, ExtensionInfo.ExtType.Precondition, "", ""), "Missed preconditions");
-        require(invokeHelper(_sign, ExtensionInfo.ExtType.Postcondition, "", ""), "Missed preconditions");
-
     }
 
     function compareStrings (string memory a, string memory b)

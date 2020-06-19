@@ -130,13 +130,19 @@ a.addExtension("Extension", b.address)
 let params = await web3.eth.abi.encodeParameters(['address[]', 'uint'], [accounts, '3'])
 a.invokeExtension("Extension", "startRent", params)
 rentA = await a.getMapElement("Extension_renterToken") 
+
+//If there are few params:
 let addrRentA = await web3.eth.abi.decodeParameters(['address'], rentA)
 addrRentA = addrRentA['0']
+// OR if there's only one param:
+let addrRentA = await web3.eth.abi.decodeParameter('address', rentA)
+
 let renterToken = await DynamicRental.at(addrRentA)
 let bal0 = await renterToken.balanceOf(accounts[0])
 renterToken.transfer(accounts[3], 1)
 bal0 = await renterToken.balanceOf(accounts[3]) //should be 1
 
+a.transferFrom(accounts[0], accounts[1], 1)
 
 //Transfer fonctionne :
 a.transfer(accounts[3],1)

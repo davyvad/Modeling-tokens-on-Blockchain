@@ -32,9 +32,7 @@ module.exports = function(deployer) {
   // deployer.deploy(SmartRentalToken, name, symbol);
   deployer.deploy(DynamicOwnership, name, symbol);
   deployer.deploy(DynamicRental, name, symbol, randomAddr, array, rentTime );
-  // deployer.deploy(B);
   deployer.deploy(ExtensionInfo);
   deployer.deploy(Extension);
-  //deployer.deploy(RentalToken, "rental1", "symb");
 
 };

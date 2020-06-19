@@ -39,7 +39,7 @@ contract DynamicRental is ERC20 {
 
     }*/
 
-    function returnRent() public {
+    function returnRent() public view{
         require(_msgSender() == _mainRenter, "Error: only mainRenter can return rent");
         //_ownerToken.endRentFromRenter();
     }
@@ -98,10 +98,10 @@ contract DynamicRental is ERC20 {
         require(addedValue == 0, "sstma");
         return false;
     }
-    
+
     function decreaseAllowance(address spender, uint256 subtractedValue) public override returns (bool) {
         require(spender == address(0), "sstma");
-        require(subtractedValue == 0, "sstma");        
+        require(subtractedValue == 0, "sstma");
         return false;
     }
 }

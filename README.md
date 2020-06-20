@@ -9,8 +9,8 @@ This repository contains for each step a folder that contains all the code of th
 2) Install the IDE: we choose to work with Visual Studio since it is convenient to developp smart contracts. 
   - You can download and install it from https://code.visualstudio.com/
   - Install Visual Studio extension: go to the extensions section and install these plugins 
-      •	Solidity
-      •	Material Icon Theme
+      - Solidity
+      - Material Icon Theme
   - Enable icon theme: select File -> Preferences -> Fill icon theme 
 3) Install truffle : npm install -g truffle (in the regular command prompt)
 4) Install ganache, an application that is used in order to test the different contracts implemented along the project. Ganache gives us the ability to fire up a personal Ethereum blockchain that is used to run tests. You can download it with the following link: https://www.trufflesuite.com/ganache

@@ -34,5 +34,5 @@ This repository contains for each step a folder that contains all the code of th
 -	In order to run the test of the contracts run in the terminal the following command: truffle test --network ganache
 (important: we run the test using the ganache network since we are using the accounts provided by ganache in the test. So it is important before running the test that you open ganache application an start a new Ethereum workspace)
 -	If you wish to test the contracts on you own you can:
-  -	First migrate the contracts with the command: truffle migrate --compile-all –reset
-  -	Then open truffle console with the command: truffle console --network ganache
+    -	First migrate the contracts with the command: truffle migrate --compile-all –reset
+    -	Then open truffle console with the command: truffle console --network ganache

@@ -2,6 +2,8 @@
 In this project we are willing to model and implement dynamic inter-tokens dependencies on Ethereum platform. The goal is essentially to implement two types of tokens: asset ownership and asset rental tokens. In this implementation we use ERC20 standard.
 The project is divided in three essentials steps. In the first step, we focus on a stand-alone implementation of the ownership asset and rental asset. The tokens are independant, and cannot have any influence one on the other. Then, in the second step the implementation handles static inter-token dependency, the tokens are dependant one of the other, and there are rules applying to the interactions between the tokens. Finally, the third step is an implementation of dynamic inter-token dependency. In this part you can choose to add an extension to the DynamicOwnership token, to add conditions on the different actions that are made on the token or to add new options on handling the token. These extension can be add at running time, and you won't need to recompile the DynamicOwnership in order to add an extension.
 
+Throughout  this project we use ERC20 standards for all the implemented tokens.
+
 This repository contains for each step a folder that contains all the code of the part according to the description below (see explanation below in "Steps to run each part of the project"), a summary booklet of the project describing more in depth each part of the project and his implementation, the different presentations made along the project and the file truffle-config.js needed in order to use the environment as define below.
 
 # Steps for installing the environment

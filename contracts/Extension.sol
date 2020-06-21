@@ -40,46 +40,29 @@ contract Extension is ExtensionInfo {
         _;
     }
 
-    function setSign()
-    public
-    {
-        sign = "bloiii";
-    }
-
-    function transferPreCond(bytes memory params) public
-     returns (bool) {
+    function transferPreCond(bytes memory params)
+    public 
+    returns (bool) {
+        _checkRentalStatus();
         bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
-        
-        (address recipient, uint256 amount) = abi.decode(params, (address, uint256));
-
-        require(amount == 1, "Requesting tranfer for more than one unit");
+        //(address recipient, uint256 amount) = abi.decode(params, (address, uint256));
         //require(renterSet == false || (renterToken.rentIsValid() == false), "Error: the item is on rent");
         if(renterSet == true ){
             DynamicRental renterToken = DynamicRental(abi.decode( extensionsData["Extension_renterToken"], (address) ));
             require(renterToken.rentIsValid() == false, "Error: the item is on rent");
-        } else {
-            require(renterSet == false , "Error: the item is on rent"); //not really needed actually
         }
-        require(_msgSender() == _owner, "Only owner is allowed to make transfer");        
         return true;
     }
 
-    function transferPost(bytes memory params)public returns (bool){
-        //variables
-        bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
-        //DynamicRental renterToken = abi.decode( initialData( "Extension_renterToken", abi.encode(new DynamicRental("Rental Token", "Rent", msg.sender, renters, time) ) ) , (DynamicRental));
-
-        //parameters
-        (address recipient, uint256 amount) = abi.decode(params, (address, uint256));
-
-        _owner = recipient;
+    function transferPost(bytes memory params)public pure returns (bool){
+ /*     bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
         if(renterSet == true ){
             DynamicRental renterToken = abi.decode( extensionsData["Extension_renterToken"], (DynamicRental) );
             if(renterToken.rentIsValid() == false){//burn the rent
                 renterToken.burn(1);
                 extensionsData["Extension_renterSet"] = abi.encode(false);
             }
-        }
+        } */
         return true;
     }
 
@@ -90,13 +73,10 @@ contract Extension is ExtensionInfo {
         bool renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
        
         (address sender, address recipient, uint256 amount) = abi.decode(params, (address, address, uint256));
-        require(amount == 1, "Requesting tranfer for more than one unit");
         //require(renterSet == false || (renterToken.rentIsValid() == false), "Error: the item is on rent");
         if(renterSet == true ){
             DynamicRental renterToken = DynamicRental(abi.decode( extensionsData["Extension_renterToken"], (address) ));
             require(renterToken.rentIsValid() == false, "Error: the item is on rent");
-        }else{
-            require(renterSet == false , "Error: the item is on rent"); //not really needed actually
         }
         return true;
     }
@@ -142,8 +122,26 @@ contract Extension is ExtensionInfo {
         return true;
     }
 */
+    function _checkRentalStatus()
+    public
+    {
+        DynamicRental renterToken;
+        address renterTokenAddress;
+        bool renterSet;
+        renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
+        renterTokenAddress = abi.decode( initialData( "Extension_renterToken", abi.encode(address(0)) ), (address));
+        if(address(0) != renterTokenAddress) {
+            renterToken = DynamicRental(renterTokenAddress);
+            if(renterToken.rentIsValid() == false) {
+                //require(1==2, "b");
+                renterToken.burn(1);
+                extensionsData["Extension_renterSet"] = abi.encode(false);
+                extensionsData["Extension_renterToken"] = abi.encode(address(0));
+            }
+        }
+    }
     /* 
-        params encodes: (address[] memory rentersList, uint rentTime)
+        params should encodes: (address[] memory rentersList, uint rentTime)
     */
     function startRent(bytes memory params )
     public 
@@ -152,21 +150,20 @@ contract Extension is ExtensionInfo {
         DynamicRental renterToken;
         address renterTokenAddress;
         bool renterSet;
-        //require(compareStrings(string(vars) ,string("")) , "Rental Already set");
         (address[] memory renters, uint time) = abi.decode(params, (address[], uint));
-        //extensionsData["msgssender"] = abi.encode(msg.sender);
-        //address msgSender = abi.decode(extensionsData["msgSender"], (address));
 
+        _checkRentalStatus();
         renterSet = abi.decode(initialData("Extension_renterSet", abi.encode(false)), (bool));
         require(renterSet == false , "This ownership is already rented");
         renterTokenAddress = abi.decode( initialData( "Extension_renterToken", abi.encode(address(0)) ), (address));
-        if(address(0) == renterTokenAddress)
+        if(address(0) == renterTokenAddress){
+            require(false == renterSet,"Extension : rentalToken is null but renterSet is true");
             renterToken = new DynamicRental("Rental Token", "Rent", msg.sender, renters, time);
-        else {
+        } else {
             renterToken = DynamicRental(renterTokenAddress);
             require(renterToken.rentIsValid() == false, "The rentalToken is still valid");
         }
-        if(renterSet == true && renterToken.rentIsValid() == false){
+        if(renterSet == true && renterToken.rentIsValid() == false) {
             renterToken.burn(1);
             extensionsData["Extension_renterSet"] = abi.encode(false);
         }

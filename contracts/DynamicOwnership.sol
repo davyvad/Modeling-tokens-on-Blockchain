@@ -33,6 +33,7 @@ contract DynamicOwnership is ERC20{
 
     function addExtension(string memory extName, address extension)
     public {
+        require(_msgSender() == _owner, "Only owner can add extension");
         if(address(0) != address(extensions[extName]))
             return;
         extensionNames.push(extName);
@@ -42,8 +43,9 @@ contract DynamicOwnership is ERC20{
     // This functions leaves a gap in extensionNames list where there was extName
     function removeExtension(string memory extName)
     public {
+        require(_msgSender() == _owner, "Only owner can remove extension");
         for (uint i = 0; i < extensionNames.length; i++){
-            if(compareStrings(extName, extensionNames[i])){
+            if(stringEquals(extName, extensionNames[i])){
                 delete extensionNames[i];
                 delete extensions[extName];
 
@@ -74,7 +76,9 @@ contract DynamicOwnership is ERC20{
 
     function transfer(address recipient, uint256 amount) public override returns (bool) {
         require(invokePreCond("transfer", abi.encode(recipient, amount)), "Preconditions didn't pass");
+        require(_msgSender() == _owner, "Only owner is allowed to make transfer");
         _transfer(_msgSender(), recipient, amount);
+        _owner = recipient;
         require(invokePost("transfer", abi.encode(recipient,amount)), "PostCondition didn't pass");
         return true;
     }
@@ -82,7 +86,7 @@ contract DynamicOwnership is ERC20{
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
         require(invokePreCond("transferFrom", abi.encode(sender, recipient, amount)), "Preconditions didn't pass");
         require(_msgSender() == _owner, "Only owner is allowed to make transfer");
-        _transfer(sender, recipient, amount);
+        transferFrom(sender, recipient, amount);
         _owner = recipient;
         require(invokePost("transferFrom", abi.encode(sender, recipient,amount)), "PostCondition didn't pass");
         return true;
@@ -108,10 +112,10 @@ contract DynamicOwnership is ERC20{
                 continue;
             for (uint j = 0; j < ext.numExtensions(); j++) {
                 (string memory extended, ExtensionInfo.ExtType condType, string memory extSignature) = ext.ExtendedFunctions(j);
-                if (compareStrings(extended, sig) && condType == _condType) {
+                if (stringEquals(extended, sig) && condType == _condType) {
                     if (_condType == ExtensionInfo.ExtType.Invokation &&
-                        compareStrings(extensionNames[i], extName)) {
-                            // The good extension and the good invokation succeeded
+                        stringEquals(extensionNames[i], extName)) {
+                            // Found good extension and the good invokation succeeded
                             return delegate(address(ext), extSignature, params);
                     } else {
                         assert(delegate(address(ext), extSignature, params));
@@ -119,7 +123,7 @@ contract DynamicOwnership is ERC20{
                 }
             }
         }
-        require(1 == 2, "Did not find contract\n"); //TODO: remove
+        //require(1 == 2, "Did not find contract\n"); //TODO: remove
         if(_condType == ExtensionInfo.ExtType.Invokation)
             return false;
         return true;
@@ -134,7 +138,7 @@ contract DynamicOwnership is ERC20{
         return success;
     }
 
-    function compareStrings (string memory a, string memory b)
+    function stringEquals (string memory a, string memory b)
     private pure
     returns (bool)
     {

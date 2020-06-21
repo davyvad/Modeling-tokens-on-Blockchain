@@ -19,7 +19,7 @@ contract DynamicRental is ERC20 {
                 _renters[rentersList[i]] = true;
             }
             _mainRenter = owner;
-            createdTimestamp = block.timestamp;
+            createdTimestamp = now; //block.timestamp;
             _rentTime = rentTime;
             _mint(owner, 1);
 
@@ -39,11 +39,6 @@ contract DynamicRental is ERC20 {
 
     }*/
 
-    function returnRent() public view{
-        require(_msgSender() == _mainRenter, "Error: only mainRenter can return rent");
-        //_ownerToken.endRentFromRenter();
-    }
-
     function rentIsValid() public view returns (bool){
         return ( _rentTime * 1 minutes >= now - createdTimestamp );
     }
@@ -58,17 +53,40 @@ contract DynamicRental is ERC20 {
 
     function burn(uint amount) public {
         //to add: require(_msgSender() == _mainRenter || _msgSender() == _ownerToken.getThis(), "Trying to burn illegaly");
+        require(amount == 1, "Rental :More than 1 token to burn");
         _burn(_mainRenter, amount); //TODO : CHANGE AMOUNT TO 1
     }
 
+    function beforeTransfer(address sender, address recipient, uint256 amount)
+    public
+    //view
+    returns(bool)
+    {
+        if(rentIsValid() == true && (_msgSender() != _mainRenter || _renters[recipient] != true ))
+            require(false, "Rent is still valid, only mainRenter can transfer");
+        if(rentIsValid() == true && _renters[recipient] != true )
+            require(false, "Rent is still valid but recipient isn't valid");
+        if(rentIsValid() == false && (_msgSender() != _owner || sender != _msgSender()))
+            require(false, "Rent isn't valid, only owner can transfer it");
+        if(rentIsValid() == false && recipient != _owner )
+            require(false, "Rent isn't valid, you can only transfer it to owner");
+
+        /*require((rentIsValid() == true && _msgSender() == _mainRenter && _renters[recipient] == true ) ||
+                (rentIsValid() == false && _msgSender() == _owner && recipient == _owner && sender == _msgSender()),
+                "Rent is out of date or cannot transfer valid rental"   ); */
+        require(1 == amount, "Amount is more than 1");
+    }
+
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
-        require(rentIsValid() == true || (rentIsValid() == false && _msgSender() == _owner), "Rent is out of date");
-        require(_renters[recipient] == true, "Recipient not allowed in rent");
-        require(_msgSender() == _mainRenter || (rentIsValid() == false && _msgSender() == _owner), "Not allowed to make tranfer");
-        if(rentIsValid() == false){//return token to owner
-            _transfer(_mainRenter, _owner, amount);
-        }
+        beforeTransfer(_msgSender(), recipient,amount);
         _transfer(_msgSender(), recipient, amount);
+        _mainRenter = recipient;
+        return true;
+    }
+
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+        beforeTransfer(sender, recipient,amount);
+        _transfer(sender, recipient, amount);
         _mainRenter = recipient;
         return true;
     }
@@ -77,19 +95,6 @@ contract DynamicRental is ERC20 {
     function approve(address spender, uint256 amount) public virtual override returns (bool) {
         require(spender == address(0), "sstma");
         require(amount == 0, "sstma");
-        return true;
-    }
-
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
-        require(_renters[recipient] == true, "Recipient not allowed in rent");
-        require(sender == _mainRenter, "Not allowed to make transfer");
-        require(_msgSender() == _mainRenter, "Not allowed to make transfer in the name of the main renter");//maybe we dont need
-        if(rentIsValid() == false){//return token to owner
-            _transfer(_mainRenter, _owner, amount);
-            return true;
-        }
-        _transfer(sender, recipient, amount);
-        _mainRenter = recipient;
         return true;
     }
 

@@ -112,9 +112,4 @@ contract ExtensionInfo is ERC20{
         }
     }
     */
-    /*function getExtensionIndex(uint256 i) public view returns (string memory, bool, string memory, uint256){
-        return (ExtendedFunctions[i]._methodSignature, ExtendedFunctions[i].preCondition,
-                ExtendedFunctions[i]._extensionSignature, ExtendedFunctions[i].arguments);
-    }
-    */
 }

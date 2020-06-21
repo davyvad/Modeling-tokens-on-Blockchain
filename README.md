@@ -124,24 +124,52 @@ owner.addExtension("function endRentFromOwner()", ext.address)
 owner.invokeExtension("function endRentFromOwner()", 0, 2, 2)
 let res = await owner.invokeExtension(ext.address)
 
+////////////////////////////////////////////////////////////////////////////////////
+// Dynamic DEMO
+////////////////////////////////////////////////////////////////////////////////////
+1) Initialize contracts
 let a = await DynamicOwnership.new("MyCar", "Car")
 let b = await Extension.new()
+2) Dynamcally add the extension:
 a.addExtension("Extension", b.address)
-let params = await web3.eth.abi.encodeParameters(['address[]', 'uint'], [accounts, '3'])
+3) Select a group of renters by accounts and number of minutes:
+let params = await web3.eth.abi.encodeParameters(['address[]', 'uint'], [accounts.slice(1,4), '1'])
+4) Invoke the new functions startRent with params:
 a.invokeExtension("Extension", "startRent", params)
-rentA = await a.getMapElement("Extension_renterToken") 
+5) Ownership tranfer should fails before the expiration time:
+a.transfer(accounts[9], 1) // should fail
 
-//If there are few params:
+6) Get the DynamicRental token:
+6.1) Get the stored bytecode data of the rentalToken:
+rentA = await a.getMapElement("Extension_renterToken") 
+6.2) Decode rentalToken address (If there are more than one params:)
 let addrRentA = await web3.eth.abi.decodeParameters(['address'], rentA)
 addrRentA = addrRentA['0']
-// OR if there's only one param:
-let addrRentA = await web3.eth.abi.decodeParameter('address', rentA)
-
+ (If there's only one param, can use this:)
+addrRentA = await web3.eth.abi.decodeParameter('address', rentA)
+6.3) Convert address to DynamicRental:
 let renterToken = await DynamicRental.at(addrRentA)
-let bal0 = await renterToken.balanceOf(accounts[0])
-renterToken.transfer(accounts[3], 1)
-bal0 = await renterToken.balanceOf(accounts[3]) //should be 1
 
+renterToken.balanceOf(accounts[0]) //should be one
+7) Transfer rent to valid renter:
+renterToken.transfer(accounts[3], 1)
+renterToken.balanceOf(accounts[3]) //should be 1
+8) Transfer rent to invalid renter
+renterToken.transfer(accounts[6], 1, {from:accounts[3]}) //should fail
+9) Transfer rent to valid renter by the owner: Fails
+renterToken.transfer(accounts[2], 1) //should fail
+
+/////////////////////////////////////////////////////////
+After the expiration time:
+10) renterToken cannot be transfered:
+renterToken.transfer(accounts[2], 1, {from:accounts[3]}) // should fail
+11) Ownership can be transfered and invoke some extenstions again:
+a.transfer(accounts[9], 1) //should succeed
+
+
+///////////////////////////////////////////////////
+DRAFT
+///////////////////////////////////////////////////
 a.transferFrom(accounts[0], accounts[1], 1)
 
 //Transfer fonctionne :

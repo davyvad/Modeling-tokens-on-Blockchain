@@ -73,23 +73,4 @@ contract DynamicRental is ERC20 {
         _mainRenter = recipient;
         return true;
     }
-
-    //TODO : CHECK IMPLEMENTATION
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
-        require(spender == address(0), "sstma");
-        require(amount == 0, "sstma");
-        return true;
-    }
-
-    function increaseAllowance(address spender, uint256 addedValue) public override returns (bool) {
-        require(spender == address(0), "sstma");
-        require(addedValue == 0, "sstma");
-        return false;
-    }
-
-    function decreaseAllowance(address spender, uint256 subtractedValue) public override returns (bool) {
-        require(spender == address(0), "sstma");
-        require(subtractedValue == 0, "sstma");
-        return false;
-    }
 }

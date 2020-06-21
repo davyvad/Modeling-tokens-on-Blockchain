@@ -1,9 +1,7 @@
 pragma solidity ^0.6.0;
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
-//import "../contracts/SmartRentalToken.sol";
 import "../contracts/ExtensionInfo.sol";
-//import "../contracts/Extension.sol";
 
 contract DynamicOwnership is ERC20{
     string public sign;
@@ -100,7 +98,6 @@ contract DynamicOwnership is ERC20{
     }
 
 
-    // Checks preconditions or postconditions of a function with signature sig
     function invokeHelper(  string memory sig, ExtensionInfo.ExtType _condType,
                             string memory extName, bytes memory params)
     private
@@ -123,14 +120,13 @@ contract DynamicOwnership is ERC20{
                 }
             }
         }
-        //require(1 == 2, "Did not find contract\n"); //TODO: remove
         if(_condType == ExtensionInfo.ExtType.Invokation)
             return false;
         return true;
     }
 
     function delegate(address extContract, string memory _extSignature, bytes memory params)
-    private //TODO: change to private
+    private 
     returns (bool)
     {
         (bool success, bytes memory data) = extContract.delegatecall(

@@ -21,11 +21,11 @@ This repository contains for each step a folder that contains all the code of th
 # Steps to run each part of the project
 -	Create a new directory => mkdir step1
 -	In this directory run the following commands (in the command prompt):
-   -	truffle init
-   -	npm init -y
-   -	npm  install -E openzeppelin-solidity
-   -	npm install truffle-assertions
-   -	npm install -g ganache-cli
+    -	truffle init
+    -	npm init -y
+    -	npm  install -E openzeppelin-solidity
+    -	npm install truffle-assertions
+    -	npm install -g ganache-cli
 -	Now the current directory has several folders: contracts, migrations, test and node_modules:
     - contracts: directory to store the smart contracts that are created 
     - migrations: directory for deploying the smart contracts into the blockchain

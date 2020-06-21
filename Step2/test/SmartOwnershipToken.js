@@ -113,7 +113,7 @@ contract('SmartOwnershipToken', (accounts) => {
     balanceCr = await rent.balanceOf.call(accounts[8]);
     console.log("Balance of Rental token accounts[6]=", balanceAr.toNumber());
     console.log("Balance of Rental token accounts[8]=", balanceCr.toNumber());
-    assert.equal(balanceAr.valueOf(), 1, "balance of account 6 should be 1");
+    assert.equal(balanceAr.valueOf(), 0, "balance of account 6 should be 1");
     assert.equal(balanceCr.valueOf(), 0, "balance of account 8 should be 0");
 
     // 12.Transfer of the OWNERSHIP token from A to D that automatically burns the rental token.
